@@ -1,30 +1,10 @@
 import React from 'react';
 import './canvas.css'
+import { Player } from './character/character'
+import { field } from './field/field'
 
-// function
-function drawGrid(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, pixelSize: number): void {
-  canvas.width = 1920;
-  canvas.height = 1080;
-  let width = canvas.width;
-  let height = canvas.height;
-  for (let x = 0; x <= width; x += pixelSize) {
-    context.moveTo(x, 0);
-    context.lineTo(x, height);
-  }
-  for (let y = 0; y <= height; y += pixelSize) {
-    context.moveTo(0, y);
-    context.lineTo(width, y);
-  }
-  context.strokeStyle = '#000';
-  context.stroke();
-  context.lineWidth = 1
-}
-function draw(canvas: HTMLCanvasElement, ctx:CanvasRenderingContext2D): void {
-  canvas.width = 1920;
-  canvas.height = 1080;
-
-  ctx.fillRect(0,0, canvas.width, canvas.height)
-}
+// common variable
+export const pixel: number = 50;
 
 // component
 interface Props {};
@@ -32,16 +12,47 @@ type CanvasComp = (props: Props) => JSX.Element;
 const canvasComp: CanvasComp = () => {
   // canvas in Ref
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
-
+  
   // render -> canvas rendering
   React.useEffect(()=>{
     if (canvasElement.current) {
       // ctx = context
       const ctx = canvasElement.current.getContext('2d');
       if (ctx === null) return;
-      drawGrid(canvasElement.current, ctx, 50)
-      // draw(canvasElement.current, ctx);
+      field(canvasElement.current, ctx);
+      
+      // new Player
+      const MC: Player = new Player({
+        canvas: canvasElement.current,
+        ctx,
+        position: {
+          x: 0,
+          y: 0
+        },
+        velocity: {
+          x: 0,
+          y: 10
+        }
+      })
+
+      MC.draw();
+
+      // animation
+      function animation(): void {
+        window.requestAnimationFrame(animation);
+        if (canvasElement.current === null) return;
+        if (ctx === null) return;
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvasElement.current.width, canvasElement.current.height);
+        MC.update();
+      }
+      animation();
+
+      addEventListener('keydown', function(event: KeyboardEvent): void {
+        console.log(event.key);
+      })
     }
+    
   }, [])
   return (
     <>
