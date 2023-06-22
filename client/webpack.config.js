@@ -6,7 +6,7 @@ module.exports = {
     index: "./src/component/index.tsx"
   },
   output: {
-    path: path.join(__dirname, "build"),
+    path: path.join(__dirname, "..", "server", "public"),
     filename: "[name].bundle.js"
   },
   module: {
@@ -33,5 +33,6 @@ module.exports = {
   devServer: {
     port: 8080,
     hot: true
-  }
+  },
+  "devtool": "source-map"
 }
