@@ -17,12 +17,19 @@ module.exports = {
           "babel-loader",
           "ts-loader"
         ]
+      },
+      {
+        test: [/\.css$/],
+        use: [
+          "style-loader",
+          "css-loader"
+        ]
       }
     ]
   },
   resolve: {
     extensions: [
-      ".js", ".jsx", ".ts", ".tsx"
+      ".js", ".jsx", ".ts", ".tsx", ".css"
     ]
   },
   plugins: [
