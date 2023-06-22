@@ -1,12 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { TestService } from './test.service';
+import { Response } from 'express';
 
 @Controller('test')
 export class TestController {
-  constructor (private TestService: TestService) {}
+  constructor (private readonly TestService: TestService) {}
 
   @Get()
-  testText(): string {
-    return this.TestService.testText();
+  testText(@Res() res: Response) {
+    res.send(this.TestService.testText());
   }
 }
