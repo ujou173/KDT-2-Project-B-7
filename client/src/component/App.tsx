@@ -1,9 +1,9 @@
 import React from 'react';
 
-type Element = (props: Props) => JSX.Element
+type App = (props: Props) => JSX.Element
 interface Props {}
 
-const App: Element = () => {
+const App: App = () => {
   return (
     <h1>hello world</h1>
   )

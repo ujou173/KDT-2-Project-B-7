@@ -1,2 +1,5 @@
 # node 패키지 예외처리
-node_modules
+node_modules/*
+
+# build파일 예외처리
+build/*
