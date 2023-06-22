@@ -5,7 +5,9 @@ import App from "./App"
 
 const rootElement: Root = createRoot(document.getElementById("root") as HTMLElement)
 rootElement.render(
-  <Router>
-    <App />
-  </Router>
+  <React.StrictMode>
+    <Router>
+      <App />
+    </Router>
+  </React.StrictMode>
   )
