@@ -3,6 +3,8 @@ import './canvas.css'
 
 // function
 function drawGrid(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, pixelSize: number): void {
+  canvas.width = 1920;
+  canvas.height = 1080;
   let width = canvas.width;
   let height = canvas.height;
   for (let x = 0; x <= width; x += pixelSize) {
@@ -15,6 +17,13 @@ function drawGrid(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, 
   }
   context.strokeStyle = '#000';
   context.stroke();
+  context.lineWidth = 1
+}
+function draw(canvas: HTMLCanvasElement, ctx:CanvasRenderingContext2D): void {
+  canvas.width = 1920;
+  canvas.height = 1080;
+
+  ctx.fillRect(0,0, canvas.width, canvas.height)
 }
 
 // component
@@ -30,7 +39,8 @@ const canvasComp: CanvasComp = () => {
       // ctx = context
       const ctx = canvasElement.current.getContext('2d');
       if (ctx === null) return;
-      drawGrid(canvasElement.current, ctx, 15)
+      drawGrid(canvasElement.current, ctx, 50)
+      // draw(canvasElement.current, ctx);
     }
   }, [])
   return (
