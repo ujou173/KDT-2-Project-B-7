@@ -19,8 +19,8 @@ function drawGrid(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, 
 
 // component
 interface Props {};
-type canvasComp = (props: Props) => JSX.Element;
-const canvasComp: canvasComp = () => {
+type CanvasComp = (props: Props) => JSX.Element;
+const canvasComp: CanvasComp = () => {
   // canvas in Ref
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
 
