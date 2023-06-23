@@ -4,11 +4,6 @@ import { Player } from './character/character'
 import { field } from './field/field'
 import { keydownHandler, keyupHandler } from './event/keyboard'
 
-// common variable
-export const pixel: number = 50;
-export const maxVelocity: number = 50;
-export const minVelocity: number = 0;
-
 // component
 interface Props {};
 const canvasComp: React.FC<Props> = () => {
