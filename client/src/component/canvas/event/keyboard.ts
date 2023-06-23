@@ -1,14 +1,21 @@
 import { Player } from '../character/character'
-import { pixel, maxVelocity, minVelocity } from '../canvas'
+import { pixel, maxVelocity, minVelocity, duration } from '../common'
 
 // keydown event
 export function keydownHandler(event: KeyboardEvent ,player: Player): void {
+  const start: Player['position'] = {
+    x: player.position.x,
+    y: player.position.y
+  }
+  const target: number = pixel
   switch (event.key) {
     case 'ArrowRight' :
-      if (player.velocity.x < maxVelocity) {
-        event.preventDefault();
-        player.velocity.x += pixel
-      }
+      if (player.isMoving) return;
+      player.isMoving = true;
+      player.position.x += pixel;
+      setTimeout(()=>{
+        player.isMoving = false
+      }, duration);
       break
     case 'ArrowLeft' :
       if (player.velocity.x >= minVelocity) {
