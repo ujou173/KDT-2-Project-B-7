@@ -14,10 +14,10 @@ const canvasComp: React.FC<Props> = () => {
 
   // Event handler
   function keydownHandler(event: KeyboardEvent): void {
-    console.log(event.key);
+    console.log('keydown', event);
   }
   function keyupHandler(event: KeyboardEvent): void {
-    console.log(event.key);
+    console.log('keyup', event);
   }
   
   // render -> canvas rendering
@@ -56,7 +56,7 @@ const canvasComp: React.FC<Props> = () => {
       animation();
 
       addEventListener('keydown', keydownHandler);
-      addEventListener('keyup', keydownHandler);
+      addEventListener('keyup', keyupHandler);
     }
     return (): void => {
       removeEventListener('keydown', keydownHandler);
