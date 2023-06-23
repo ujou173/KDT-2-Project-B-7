@@ -1,10 +1,8 @@
 import React from 'react';
 import Canvas from './canvas/canvas'
 
-type App = (props: Props) => JSX.Element
 interface Props {}
-
-const App: App = () => {
+const App: React.FC<Props> = () => {
   return (
     <>
       <h1>hello world</h1>

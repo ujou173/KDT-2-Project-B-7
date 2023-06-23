@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import './canvas.css'
 import { Player } from './character/character'
 import { field } from './field/field'
@@ -8,10 +8,17 @@ export const pixel: number = 50;
 
 // component
 interface Props {};
-type CanvasComp = (props: Props) => JSX.Element;
-const canvasComp: CanvasComp = () => {
+const canvasComp: React.FC<Props> = () => {
   // canvas in Ref
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
+
+  // Event handler
+  function keydownHandler(event: KeyboardEvent): void {
+    console.log(event.key);
+  }
+  function keyupHandler(event: KeyboardEvent): void {
+    console.log(event.key);
+  }
   
   // render -> canvas rendering
   React.useEffect(()=>{
@@ -31,7 +38,7 @@ const canvasComp: CanvasComp = () => {
         },
         velocity: {
           x: 0,
-          y: 10
+          y: 0
         }
       })
 
@@ -48,11 +55,13 @@ const canvasComp: CanvasComp = () => {
       }
       animation();
 
-      addEventListener('keydown', function(event: KeyboardEvent): void {
-        console.log(event.key);
-      })
+      addEventListener('keydown', keydownHandler);
+      addEventListener('keyup', keydownHandler);
     }
-    
+    return (): void => {
+      removeEventListener('keydown', keydownHandler);
+      removeEventListener('keyup', keydownHandler);
+    }
   }, [])
   return (
     <>
