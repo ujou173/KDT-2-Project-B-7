@@ -6,7 +6,8 @@ import { keydownHandler, keyupHandler } from './event/keyboard'
 
 // common variable
 export const pixel: number = 50;
-const duration: number = 1000;
+export const maxVelocity: number = 50;
+export const minVelocity: number = 0;
 
 // component
 interface Props {};
