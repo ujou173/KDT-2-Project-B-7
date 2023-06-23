@@ -45,6 +45,11 @@ module.exports = {
         target: "http://localhost:3500",
         changeOrigin: true,
         secure: false
+      },
+      "/data": {
+        target: "http://localhost:3500",
+        changeOrigin: true,
+        secure: false
       }
     }
   },
