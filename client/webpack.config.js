@@ -39,7 +39,14 @@ module.exports = {
   ],
   devServer: {
     port: 8080,
-    hot: true
+    hot: true,
+    proxy: {
+      "/api": {
+        target: "http://localhost:3500",
+        changeOrigin: true,
+        secure: false
+      }
+    }
   },
   "devtool": "source-map"
 }
