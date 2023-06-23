@@ -1,5 +1,5 @@
 import { PlayerProps } from './charType'
-import { pixel } from '../canvas'
+import { pixel } from '../common'
 
 // character
 export class Player {
