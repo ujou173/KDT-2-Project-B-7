@@ -1,59 +1,38 @@
 import { Player } from '../character/character'
-import { pixel, maxVelocity, minVelocity, duration } from '../common'
 
 // keydown event
 export function keydownHandler(event: KeyboardEvent ,player: Player): void {
-  const start: Player['position'] = {
-    x: player.position.x,
-    y: player.position.y
-  }
-  const target: number = pixel
   switch (event.key) {
     case 'ArrowRight' :
-      if (player.isMoving) return;
-      player.isMoving = true;
-      player.position.x += pixel;
-      setTimeout(()=>{
-        player.isMoving = false
-      }, duration);
+      event.preventDefault();
       break
     case 'ArrowLeft' :
-      if (player.velocity.x >= minVelocity) {
-        event.preventDefault();
-        player.velocity.x -= pixel
-      }
-      break
-    case 'ArrowDown' :
-      if (player.velocity.y < maxVelocity) {
-        event.preventDefault();
-        player.velocity.y += pixel
-      }
+      event.preventDefault();
       break
     case 'ArrowUp' :
-      if (player.velocity.y >= minVelocity) {
-        event.preventDefault();
-        player.velocity.y -= pixel
-      }
+      event.preventDefault();
       break
-    default :
-      console.log(event.key);
+    case 'ArrowDown' :
+      event.preventDefault();
       break
   }
+  player.pressedKey[event.key] = true
 }
 // keyup event
 export function keyupHandler(event: KeyboardEvent, player: Player): void {
   switch (event.key) {
     case 'ArrowRight' :
-      player.velocity.x = 0;
+      event.preventDefault();
       break
     case 'ArrowLeft' :
-      player.velocity.x = 0;
-      break
-    case 'ArrowDown' :
-      player.velocity.y = 0;
+      event.preventDefault();
       break
     case 'ArrowUp' :
-      player.velocity.y = 0;
+      event.preventDefault();
+      break
+    case 'ArrowDown' :
+      event.preventDefault();
       break
   }
+  player.pressedKey[event.key] = false
 }

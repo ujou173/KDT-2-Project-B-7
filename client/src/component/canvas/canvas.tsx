@@ -25,14 +25,9 @@ const canvasComp: React.FC<Props> = () => {
       position: {
         x: 0,
         y: 0
-      },
-      velocity: {
-        x: 0,
-        y: 0
       }
     })
-    MC.draw();
-    
+
     // animation
     function animation(): void {
       window.requestAnimationFrame(animation);
