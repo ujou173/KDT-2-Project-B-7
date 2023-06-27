@@ -40,6 +40,7 @@ module.exports = {
   devServer: {
     port: 8080,
     hot: true,
+    historyApiFallback: true,
     proxy: {
       "/socket.io": {
         target: "http://localhost:3500",
