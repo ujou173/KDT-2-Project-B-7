@@ -1,12 +1,16 @@
 import React from 'react';
-import Canvas from './canvas/canvas'
+import Canvas from './canvas/canvas';
+import EntryCanvas from './entryCanvas/entryCanvas';
+import { Routes, Route, Link } from 'react-router-dom';
 
 interface Props {}
 const App: React.FC<Props> = () => {
   return (
     <>
-      <h1>hello world</h1>
-      <Canvas />
+      <Routes>
+        <Route path='/main' element={<Canvas />} />
+        <Route path='/entry' element={<EntryCanvas />} />
+      </Routes>
     </>
   )
 }
