@@ -41,12 +41,7 @@ module.exports = {
     port: 8080,
     hot: true,
     proxy: {
-      "/chat": {
-        target: "http://localhost:3500",
-        changeOrigin: true,
-        secure: false
-      },
-      "/character-move": {
+      "/socket.io": {
         target: "http://localhost:3500",
         changeOrigin: true,
         secure: false
