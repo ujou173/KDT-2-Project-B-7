@@ -5,17 +5,24 @@ import { field } from './field/field'
 import { keydownHandler, keyupHandler } from './event/keyboard'
 import { Socket } from 'socket.io-client'
 import { SocketContext } from '../index'
+import { useLocation, Location } from 'react-router-dom'
 
 // component
 interface Props {};
 const canvasComp: React.FC<Props> = () => {
   // variable management
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
+  const [ nickName, setNickName ] = React.useState<string>(useLocation().state.nickName);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<Player | null>(null);
   const { chatSocket, moveSocket }: {chatSocket: Socket, moveSocket: Socket} = useContext(SocketContext)
-  
+
   // function
+  // socketID setup
+  React.useEffect(()=>{
+    moveSocket.id = nickName
+  }, [nickName])
+
   // canvas.context setup
   React.useEffect(()=>{
     if (canvasElement.current === null) return;
@@ -73,6 +80,7 @@ const canvasComp: React.FC<Props> = () => {
     return (): void=>{
       removeEventListener('keydown', (e: KeyboardEvent): void => {keydownHandler(e, user)});
       removeEventListener('keyup', (e: KeyboardEvent): void => {keyupHandler(e, user)});
+      moveSocket.off('enterUser', listenEnterUser)
     }
   }, [user])
 

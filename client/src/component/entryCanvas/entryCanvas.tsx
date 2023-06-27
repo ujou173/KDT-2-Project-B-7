@@ -15,8 +15,9 @@ const EntryCanvas: React.FC<Props> = () => {
   }, [formElement])
   // form -> onSubmit handler
   const submitHandler: (e: React.FormEvent<HTMLFormElement>) => void = React.useCallback(e => {
+    e.preventDefault();
     navigate('/main', {state: {nickName}})
-  }, [formElement])
+  }, [nickName])
   return (
     <>
       <form ref={formElement} onSubmit={submitHandler}>
