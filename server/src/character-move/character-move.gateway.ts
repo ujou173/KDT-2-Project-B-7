@@ -1,14 +1,17 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Server } from 'socket.io'
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
-  namespace: 'character-move'
+  namespace: 'character-move',
+  cors: {
+    origin: 'http://localhost:3500'
+  }
 })
 export class CharacterMoveGateway {
   @WebSocketServer()
-  server: Server
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  server: Server;
+  @SubscribeMessage('enterUser')
+  enterUser(client: Socket, payload: {x: number, y: number}): void {
+    client.emit('enterUser', `너의 좌표는 x: ${payload.x}, y: ${payload.y}야!`)
   }
 }
