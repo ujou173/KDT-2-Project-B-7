@@ -1,3 +1,4 @@
+import { Socket } from 'socket.io-client'
 // character Type
 export interface PlayerProps {
   canvas: HTMLCanvasElement,
@@ -5,5 +6,7 @@ export interface PlayerProps {
   position: {
     x: number,
     y: number
-  }
+  },
+  moveSocket: Socket
+  chatSocket: Socket
 }

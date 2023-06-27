@@ -1,10 +1,11 @@
 import { PlayerProps } from './charType'
 import { pixel } from '../common'
+import { Socket } from 'socket.io-client'
 
 // character
 export class Player {
-  c: HTMLCanvasElement
-  ctx: CanvasRenderingContext2D
+  private readonly c: HTMLCanvasElement
+  private readonly ctx: CanvasRenderingContext2D
   position: {
     x: number,
     y: number
@@ -12,41 +13,53 @@ export class Player {
   pressedKey: {
     [key: string]: boolean
   }
-  constructor ( { canvas, ctx, position }:PlayerProps ) {
+  private readonly moveSocket: Socket
+  readonly chatSocket: Socket
+  constructor ( { canvas, ctx, position, moveSocket, chatSocket }:PlayerProps ) {
     this.c = canvas
     this.ctx = ctx
     this.position = position
     this.pressedKey = {}
+    this.moveSocket = moveSocket
+    this.chatSocket = chatSocket
   }
 
   draw(): void {
     this.ctx.fillStyle = 'blue';
     this.ctx.fillRect(this.position.x, this.position.y, pixel, pixel);
   }
-  
+
+  private positionUpdate(): {x: number, y: number} {
+    return {x: this.position.x, y: this.position.y}
+  }
+
   update(): void {
     this.draw();
     if (this.position.x + pixel <= this.c.width - pixel) {
       if (this.pressedKey.ArrowRight) {
         this.position.x += pixel;
+        this.moveSocket.emit('enterUser', this.positionUpdate())
         this.pressedKey.ArrowRight = false;
       }
     }
     if (this.position.x > 0) {
       if (this.pressedKey.ArrowLeft) {
         this.position.x -= pixel;
+        this.moveSocket.emit('enterUser', this.positionUpdate())
         this.pressedKey.ArrowLeft = false;
       }
     }
     if (this.position.y + pixel <= this.c.height - pixel) {
       if (this.pressedKey.ArrowDown) {
         this.position.y += pixel;
+        this.moveSocket.emit('enterUser', this.positionUpdate())
         this.pressedKey.ArrowDown = false;
       }
     }
     if (this.position.y > 0) {
       if (this.pressedKey.ArrowUp) {
         this.position.y -= pixel;
+        this.moveSocket.emit('enterUser', this.positionUpdate())
         this.pressedKey.ArrowUp = false;
       }
     }

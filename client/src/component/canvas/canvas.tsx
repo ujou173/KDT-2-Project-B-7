@@ -37,7 +37,9 @@ const canvasComp: React.FC<Props> = () => {
       position: {
         x: 0,
         y: 0
-      }
+      },
+      moveSocket,
+      chatSocket
     }))
   }, [ctx])
 
