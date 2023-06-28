@@ -7,22 +7,25 @@ import { Socket } from 'socket.io-client'
 import { SocketContext } from '../index'
 import { useLocation, Location } from 'react-router-dom'
 
-// component
+// type
 interface Props {};
+interface onlinePlayer {
+  id: string,
+  info: Player
+}
+
+// component
 const canvasComp: React.FC<Props> = () => {
   // variable management
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
-  const [ nickName, setNickName ] = React.useState<string>(useLocation().state.nickName);
+  const [ nickName ] = React.useState<string>(useLocation().state.nickName);
+  const [ color ] = React.useState<string>(useLocation().state.color);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<Player | null>(null);
   const { chatSocket, moveSocket }: {chatSocket: Socket, moveSocket: Socket} = useContext(SocketContext)
-
+  const [ onlineUser, setOnlineUser ] = React.useState<onlinePlayer[]>([])
+  
   // function
-  // socketID setup
-  React.useEffect(()=>{
-    moveSocket.id = nickName
-  }, [nickName])
-
   // canvas.context setup
   React.useEffect(()=>{
     if (canvasElement.current === null) return;
@@ -45,6 +48,7 @@ const canvasComp: React.FC<Props> = () => {
         x: 0,
         y: 0
       },
+      color,
       moveSocket,
       chatSocket
     }))
@@ -58,6 +62,13 @@ const canvasComp: React.FC<Props> = () => {
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, canvasElement.current.width, canvasElement.current.height);
       user.update()
+
+      // multiplayer
+      if (onlineUser.length > 0) {
+        onlineUser.forEach((element: onlinePlayer) => {
+          element.info.update();
+        })
+      }
     }
     animation();
   }, [user])

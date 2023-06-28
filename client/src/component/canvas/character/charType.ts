@@ -3,6 +3,7 @@ import { Socket } from 'socket.io-client'
 export interface PlayerProps {
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
+  color: string
   position: {
     x: number,
     y: number
