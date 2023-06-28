@@ -38,10 +38,10 @@ export class SocketServerService {
   }
   checkDuplicationNickName(userInfo: string): boolean {
     const result = Object.keys(this.onlineUser).includes(userInfo);
-    let response: boolean = false;
-    if (result === undefined) {
-      return response = true
+    let response: boolean = true;
+    if (result === false) {
+      return response = false
     }
-    return response
+    return response;
   }
 }
