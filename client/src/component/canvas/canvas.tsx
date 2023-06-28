@@ -106,6 +106,11 @@ const canvasComp: React.FC<Props> = () => {
     }
   }, [user])
 
+  // disconnect Event
+  React.useEffect(()=>{
+    if (nickName === "") return;
+    serverSocket.emit('outUser', nickName);
+  }, [nickName])
   serverSocket.on('disconnect', ()=>{
     serverSocket.emit('outUser', nickName);
   })
