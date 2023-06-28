@@ -85,32 +85,20 @@ const canvasComp: React.FC<Props> = () => {
     animation();
   }, [user])
 
-  // test
-  const eventSubmit = React.useCallback(()=>{
-    if (user === null) return;
-    moveSocket.emit('enterUser', {x: user.position.x, y:user.position.y})
-  }, [user])
-  const listenEnterUser: (data:string) => void = React.useCallback((data: string)=>{
-    console.log(data);
-  }, [user])
-
   // event management
   React.useEffect(()=>{
     if (user === null) return;
     addEventListener('keydown', (e: KeyboardEvent): void => {keydownHandler(e, user)});
     addEventListener('keyup', (e: KeyboardEvent): void => {keyupHandler(e, user)});
-    moveSocket.on('enterUser', listenEnterUser)
     return (): void=>{
       removeEventListener('keydown', (e: KeyboardEvent): void => {keydownHandler(e, user)});
       removeEventListener('keyup', (e: KeyboardEvent): void => {keyupHandler(e, user)});
-      moveSocket.off('enterUser', listenEnterUser)
     }
   }, [user])
 
   return (
     <>
       <canvas ref={canvasElement} className='canvas'></canvas>
-      <button onClick={eventSubmit}>위치 전송</button>
     </>
   )
 }
