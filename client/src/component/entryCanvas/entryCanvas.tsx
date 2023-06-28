@@ -35,7 +35,7 @@ const EntryCanvas: React.FC<Props> = () => {
 
     serverSocket.emit('checkNickName', nickName);
     serverSocket.on('checkNickName', (data: boolean) => {
-      if (data === true) {
+      if (data === false) {
         navigate('/main', {state: {nickName, color}})
       } else {
         alert('중복된 닉네임 입니다.')
