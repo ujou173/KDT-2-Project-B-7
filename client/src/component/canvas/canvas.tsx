@@ -59,23 +59,6 @@ const canvasComp: React.FC<Props> = () => {
     serverSocket.emit('enterUser', {id: nickName, info: user.position});
   }, [user])
 
-  // test
-  React.useEffect(()=>{
-    serverSocket.on('enterUserResult', data => {
-      console.log(data)
-      if (data === 'success') {
-        serverSocket.emit('getOnline', '줘')
-        serverSocket.on('getOnline', _data => {
-          console.log(_data)
-        })
-      }
-    })
-    return ()=>{
-      serverSocket.removeAllListeners('enterUserResult')
-      serverSocket.removeAllListeners('getOnline')
-    }
-  }, [user])
-
   // animation
   React.useEffect(()=>{
     const animation: () => void = function() {
