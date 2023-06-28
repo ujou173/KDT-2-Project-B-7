@@ -4,7 +4,7 @@ import { Player } from './character/character'
 import { field } from './field/field'
 import { keydownHandler, keyupHandler } from './event/keyboard'
 import { Socket } from 'socket.io-client'
-import { SocketContext } from '../index'
+import { SocketContext } from '../App'
 import { useLocation, Location } from 'react-router-dom'
 
 // type
@@ -19,7 +19,6 @@ const canvasComp: React.FC<Props> = () => {
   // variable management
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
   const [ nickName ] = React.useState<string>(useLocation().state.nickName);
-  const [ moveSocketID, setMoveSocketID ] = React.useState<string>();
   const [ color ] = React.useState<string>(useLocation().state.color);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<Player | null>(null);
@@ -27,17 +26,6 @@ const canvasComp: React.FC<Props> = () => {
   const [ onlineUser, setOnlineUser ] = React.useState<onlinePlayer[]>([]);
   
   // function
-  // enter Componenet
-  React.useEffect(()=>{
-    moveSocket.emit('enterUser', nickName)
-  }, [nickName])
-  React.useEffect(()=>{
-    moveSocket.on('yourID', (data: string) => {
-      setMoveSocketID(data)
-      moveSocket.removeAllListeners('yourID');
-    })
-  }, [nickName])
-
   // canvas.context setup
   React.useEffect(()=>{
     if (canvasElement.current === null) return;
