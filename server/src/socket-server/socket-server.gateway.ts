@@ -1,6 +1,6 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { SocketServerService, UserInfo } from './socket-server.service';
+import { SocketServerService, UserInfo, InputUser } from './socket-server.service';
 
 @WebSocketGateway()
 export class SocketServerGateway {
@@ -8,13 +8,8 @@ export class SocketServerGateway {
   @WebSocketServer()
   server: Server;
   @SubscribeMessage('enterUser')
-  enterUser(client: Socket, payload: UserInfo): void {
-    try {
-      this.SocketServerService.addOnlineUser(payload);
-      client.emit('enterUserResult', 'success');
-    } catch (e) {
-      client.emit('enterUserResult', 'fail');
-    }
+  enterUser(client: Socket, payload: InputUser): void {
+    this.SocketServerService.addOnlineUser(payload);
   }
   @SubscribeMessage('getOnline')
   getOnline(client: Socket, payload: string): void {
@@ -22,7 +17,7 @@ export class SocketServerGateway {
     client.emit('getOnline', data)
   }
   @SubscribeMessage('outUser')
-  disconnectUser(client: Socket, payload: UserInfo["id"]): void {
+  disconnectUser(client: Socket, payload: string): void {
     this.SocketServerService.deleteOnlineUser(payload);
   }
   @SubscribeMessage('checkNickName')

@@ -1,7 +1,16 @@
 import { Injectable } from '@nestjs/common';
 
 export interface UserInfo {
-  id: string,
+  [key: string] : {
+    position: {
+      x: number,
+      y: number
+    }
+  }
+}
+
+export interface InputUser {
+  id: string
   info: {
     position: {
       x: number,
@@ -12,33 +21,23 @@ export interface UserInfo {
 
 @Injectable()
 export class SocketServerService {
-  private onlineUser: UserInfo[] = [];
+  private onlineUser: UserInfo = {};
 
   getOnlineUser(): string[] {
-    const result:string[] = this.onlineUser.map((element: UserInfo) => {
-      return element.id;
-    })
+    const result:string[] = Object.keys(this.onlineUser)
     return result;
   }
-  addOnlineUser(userInfo: UserInfo): void {
-    this.onlineUser.push(userInfo);
+  addOnlineUser(userInfo: InputUser): void {
+    this.onlineUser[userInfo.id] = userInfo.info;
   }
-  deleteOnlineUser(userID: UserInfo["id"]): void {
-    const removeTarget = this.onlineUser.findIndex((element: UserInfo) => element.id === userID);
-    if (removeTarget !== -1) {
-      this.onlineUser.splice(removeTarget, 1);
-    }
+  deleteOnlineUser(userID: string): void {
+    delete this.onlineUser.userID
   }
-  positionUpdate(userInfo: UserInfo): void {
-    const updateTarget = this.onlineUser.findIndex((element: UserInfo) => element.id === userInfo.id)
-    if (updateTarget !== -1) {
-      this.onlineUser[updateTarget].info.position = userInfo.info.position;
-    }
+  positionUpdate(userInfo: {id: string, position: {x:number, y:number}}): void {
+    this.onlineUser[userInfo.id].position = userInfo.position
   }
   checkDuplicationNickName(userInfo: string): boolean {
-    const result = this.onlineUser.find((element: UserInfo) => {
-      return element.id === userInfo;
-    })
+    const result = Object.keys(this.onlineUser).includes(userInfo);
     let response: boolean = false;
     if (result === undefined) {
       return response = true
