@@ -12,7 +12,7 @@ const EntryCanvas: React.FC<Props> = () => {
   
   // input's value
   const [ nickName, setNickName ] = React.useState<string>("");
-  const [ color, setColor ] = React.useState("blue");
+  const [ color, setColor ] = React.useState("red");
   const { serverSocket } = React.useContext(SocketContext)
   
   // input -> onChange handler
@@ -30,6 +30,9 @@ const EntryCanvas: React.FC<Props> = () => {
       alert('공백 문자는 닉네임으로 입력할 수 없습니다.')
       return;
     }
+
+    serverSocket.removeAllListeners('checkNickName');
+
     serverSocket.emit('checkNickName', nickName);
     serverSocket.on('checkNickName', (data: boolean) => {
       if (data === true) {
