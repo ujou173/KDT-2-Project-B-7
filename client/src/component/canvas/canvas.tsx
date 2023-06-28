@@ -19,13 +19,25 @@ const canvasComp: React.FC<Props> = () => {
   // variable management
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
   const [ nickName ] = React.useState<string>(useLocation().state.nickName);
+  const [ moveSocketID, setMoveSocketID ] = React.useState<string>();
   const [ color ] = React.useState<string>(useLocation().state.color);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<Player | null>(null);
   const { chatSocket, moveSocket }: {chatSocket: Socket, moveSocket: Socket} = useContext(SocketContext)
-  const [ onlineUser, setOnlineUser ] = React.useState<onlinePlayer[]>([])
+  const [ onlineUser, setOnlineUser ] = React.useState<onlinePlayer[]>([]);
   
   // function
+  // enter Componenet
+  React.useEffect(()=>{
+    moveSocket.emit('enterUser', nickName)
+  }, [nickName])
+  React.useEffect(()=>{
+    moveSocket.on('yourID', (data: string) => {
+      setMoveSocketID(data)
+      moveSocket.removeAllListeners('yourID');
+    })
+  }, [nickName])
+
   // canvas.context setup
   React.useEffect(()=>{
     if (canvasElement.current === null) return;
