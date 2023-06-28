@@ -15,15 +15,13 @@ export class Player {
     [key: string]: boolean
   }
   private readonly moveSocket: Socket
-  readonly chatSocket: Socket
-  constructor ( { canvas, ctx, color, position, moveSocket, chatSocket }:PlayerProps ) {
+  constructor ( { canvas, ctx, color, position, moveSocket }:PlayerProps ) {
     this.c = canvas
     this.ctx = ctx
     this.color = color
     this.position = position
     this.pressedKey = {}
     this.moveSocket = moveSocket
-    this.chatSocket = chatSocket
   }
 
   draw(): void {

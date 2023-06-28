@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, NavigateFunction } from 'react-router-dom';
+import { SocketContext } from '../App'
 
 interface Props {}
 const EntryCanvas: React.FC<Props> = () => {
@@ -12,6 +13,7 @@ const EntryCanvas: React.FC<Props> = () => {
   // input's value
   const [ nickName, setNickName ] = React.useState<string>("");
   const [ color, setColor ] = React.useState("blue");
+  const { serverSocket } = React.useContext(SocketContext)
   
   // input -> onChange handler
   const nickNameHandle: (e: React.ChangeEvent<HTMLInputElement>) => void = React.useCallback(e=>{
@@ -24,7 +26,18 @@ const EntryCanvas: React.FC<Props> = () => {
   // form -> onSubmit handler
   const submitHandler: (e: React.FormEvent<HTMLFormElement>) => void = React.useCallback(e => {
     e.preventDefault();
-    navigate('/main', {state: {nickName, color}})
+    if (nickName === "") {
+      alert('공백 문자는 닉네임으로 입력할 수 없습니다.')
+      return;
+    }
+    serverSocket.emit('checkNickName', nickName);
+    serverSocket.on('checkNickName', (data: boolean) => {
+      if (data === true) {
+        navigate('/main', {state: {nickName, color}})
+      } else {
+        alert('중복된 닉네임 입니다.')
+      }
+    })
   }, [nickName, color])
   
   return (

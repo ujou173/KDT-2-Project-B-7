@@ -32,7 +32,17 @@ export class SocketServerService {
   positionUpdate(userInfo: UserInfo): void {
     const updateTarget = this.onlineUser.findIndex((element: UserInfo) => element.id === userInfo.id)
     if (updateTarget !== -1) {
-      this.onlineUser[updateTarget].info.position = userInfo.info.position
+      this.onlineUser[updateTarget].info.position = userInfo.info.position;
     }
+  }
+  checkDuplicationNickName(userInfo: string): boolean {
+    const result = this.onlineUser.find((element: UserInfo) => {
+      return element.id === userInfo;
+    })
+    let response: boolean = false;
+    if (result === undefined) {
+      return response = true
+    }
+    return response
   }
 }

@@ -22,7 +22,7 @@ const canvasComp: React.FC<Props> = () => {
   const [ color ] = React.useState<string>(useLocation().state.color);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<Player | null>(null);
-  const { chatSocket, moveSocket }: {chatSocket: Socket, moveSocket: Socket} = useContext(SocketContext)
+  const { chatSocket, moveSocket, serverSocket } = useContext(SocketContext)
   const [ onlineUser, setOnlineUser ] = React.useState<onlinePlayer[]>([]);
   
   // function
@@ -49,10 +49,32 @@ const canvasComp: React.FC<Props> = () => {
         y: 0
       },
       color,
-      moveSocket,
-      chatSocket
+      moveSocket
     }))
   }, [ctx])
+
+  // Player online
+  React.useEffect(()=>{
+    if (user === null) return;
+    serverSocket.emit('enterUser', {id: nickName, info: user.position});
+  }, [user])
+
+  // test
+  React.useEffect(()=>{
+    serverSocket.on('enterUserResult', data => {
+      console.log(data)
+      if (data === 'success') {
+        serverSocket.emit('getOnline', '줘')
+        serverSocket.on('getOnline', _data => {
+          console.log(_data)
+        })
+      }
+    })
+    return ()=>{
+      serverSocket.removeAllListeners('enterUserResult')
+      serverSocket.removeAllListeners('getOnline')
+    }
+  }, [user])
 
   // animation
   React.useEffect(()=>{
@@ -84,6 +106,9 @@ const canvasComp: React.FC<Props> = () => {
     }
   }, [user])
 
+  serverSocket.on('disconnect', ()=>{
+    serverSocket.emit('outUser', nickName);
+  })
   return (
     <>
       <canvas ref={canvasElement} className='canvas'></canvas>

@@ -9,5 +9,4 @@ export interface PlayerProps {
     y: number
   },
   moveSocket: Socket
-  chatSocket: Socket
 }
