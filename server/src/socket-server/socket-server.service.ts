@@ -25,10 +25,14 @@ export class SocketServerService {
   }
   deleteOnlineUser(userID: UserInfo["id"]): void {
     const removeTarget = this.onlineUser.findIndex((element: UserInfo) => element.id === userID);
-    this.onlineUser.splice(removeTarget, 1);
+    if (removeTarget !== -1) {
+      this.onlineUser.splice(removeTarget, 1);
+    }
   }
   positionUpdate(userInfo: UserInfo): void {
     const updateTarget = this.onlineUser.findIndex((element: UserInfo) => element.id === userInfo.id)
-    this.onlineUser[updateTarget].info.position = userInfo.info.position
+    if (updateTarget !== -1) {
+      this.onlineUser[updateTarget].info.position = userInfo.info.position
+    }
   }
 }
