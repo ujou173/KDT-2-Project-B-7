@@ -4,7 +4,6 @@ import { Player } from './character/character'
 import { field } from './field/field'
 import { keydownHandler, keyupHandler } from './event/keyboard'
 import { Socket } from 'socket.io-client'
-import { SocketContext } from '../App'
 import { useLocation, Location } from 'react-router-dom'
 
 // type
@@ -22,7 +21,6 @@ const canvasComp: React.FC<Props> = () => {
   const [ color ] = React.useState<string>(useLocation().state.color);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<Player | null>(null);
-  const { chatSocket, moveSocket, serverSocket } = useContext(SocketContext)
   const [ onlineUser, setOnlineUser ] = React.useState<onlinePlayer[]>([]);
   
   // function
