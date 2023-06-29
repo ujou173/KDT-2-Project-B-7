@@ -19,7 +19,7 @@ const canvasComp: React.FC<Props> = () => {
   const color = React.useRef<string>(useLocation().state.color);
   const serverSocketRef = React.useRef<Socket | null>(null);
   const moveSocketRef = React.useRef<Socket | null>(null);
-  const onlineUsers = React.useRef<MultiplayerUser[]>([]);
+  const [ onlineUsers, setOnlineUsers ] = React.useState<MultiplayerUser[]>([]);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<UserCharacter | null>(null);
 
@@ -76,28 +76,28 @@ const canvasComp: React.FC<Props> = () => {
     }))
   }, [ctx])
 
-  // insert my character to onlineUsers
-  React.useEffect(()=>{
-    if (user === null) return;
-    'what code here?'
-  }, [user])
-
   // create multiplayer user
   const newMuiltiCharacter: (payload: MultiplayerData) => MultiplayerUser | undefined = React.useCallback((payload)=>{
+    console.log('페이로드 : ', payload);
+    console.log(`내가 보이면 실행된거야 캔버스 : ${canvasElement.current}, ctx: ${ctx}`)
     if (canvasElement.current === null || ctx === null) return;
+    console.log('내가 보이면 성공했을까?')
     return new MultiplayerUser({
       canvas: canvasElement.current,
       ctx,
       id: payload.id,
       color: payload.color,
       position: payload.position
-    })
-  }, [])
+    });
+  }, [canvasElement, ctx])
 
   // get users
-  const getUsers = React.useCallback(()=>{
-    console.log(onlineUsers.current);
-  }, [])
+  // const getUsers = React.useCallback(()=>{
+  //   console.log(onlineUsers);
+  // }, [])
+  React.useEffect(()=>{
+    console.log(onlineUsers);
+  }, [onlineUsers])
 
   // ==================================================================
 
@@ -115,8 +115,8 @@ const canvasComp: React.FC<Props> = () => {
       user.update()
       
       // multiplayer
-      if (onlineUsers.current.length > 0) {
-        onlineUsers.current.forEach((element: MultiplayerUser) => {
+      if (onlineUsers.length > 0) {
+        onlineUsers.forEach((element: MultiplayerUser) => {
           element.update();
         })
       }
@@ -152,9 +152,17 @@ const canvasComp: React.FC<Props> = () => {
   React.useEffect(()=>{
     // enter user
     serverSocketRef.current?.on('enterUser', (payload: MultiplayerData) => {
+      console.log('누군가 들어왔다');
       const newUser: MultiplayerUser | undefined = newMuiltiCharacter(payload);
       if (newUser) {
-        onlineUsers.current.push(newUser);
+      //   let updateArray: MultiplayerUser[]
+      //   if (onlineUsers.length === 0) {
+      //     updateArray = [newUser]
+      //   } else {
+      //     updateArray = [...onlineUsers, newUser]
+      //   };
+      //   setOnlineUsers(updateArray);
+        setOnlineUsers(prevUsers => [...prevUsers, newUser])
       }
     });
 
@@ -172,7 +180,7 @@ const canvasComp: React.FC<Props> = () => {
   return (
     <>
       <canvas ref={canvasElement} className='canvas'></canvas>
-      <button onClick={getUsers}>누구 있어</button>
+      {/* <button onClick={getUsers}>누구 있어</button> */}
     </>
   )
 }
