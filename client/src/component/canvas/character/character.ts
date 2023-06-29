@@ -6,6 +6,7 @@ import { Socket } from 'socket.io-client'
 export class Player {
   private readonly c: HTMLCanvasElement
   private readonly ctx: CanvasRenderingContext2D
+  id: string
   color: string
   position: {
     x: number,
@@ -15,9 +16,10 @@ export class Player {
     [key: string]: boolean
   }
   private readonly moveSocket: Socket
-  constructor ( { canvas, ctx, color, position, moveSocket }:PlayerProps ) {
+  constructor ( { canvas, ctx, id, color, position, moveSocket }:PlayerProps ) {
     this.c = canvas
     this.ctx = ctx
+    this.id = id
     this.color = color
     this.position = position
     this.pressedKey = {}

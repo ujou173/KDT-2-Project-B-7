@@ -23,6 +23,7 @@ export class SocketServerGateway implements OnGatewayDisconnect {
   @SubscribeMessage('enterUser')
   enterUser(client: Socket, payload: UserData): void {
     this.SocketServerService.addOnlineUser({socketID: client.id, info: payload});
+    client.broadcast.emit('enterUser', payload)
   }
   @SubscribeMessage('getOnline')
   getOnline(client: Socket, payload: string): void {

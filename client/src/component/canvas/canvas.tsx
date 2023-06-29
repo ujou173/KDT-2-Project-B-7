@@ -18,15 +18,15 @@ const canvasComp: React.FC<Props> = () => {
   // variable management
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
   const nickName = React.useRef<string>(useLocation().state.nickName);
+  const color = React.useRef<string>(useLocation().state.color);
   const serverSocketRef = React.useRef<Socket | null>(null);
   const moveSocketRef = React.useRef<Socket | null>(null);
-  const [ color ] = React.useState<string>(useLocation().state.color);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<Player | null>(null);
   const [ onlineUser, setOnlineUser ] = React.useState<onlinePlayer[]>([]);
   
   // function
-  // serverSocket connect
+  // socket connect
   React.useEffect(()=>{
     serverSocketRef.current = io();
     moveSocketRef.current = io('/character-move');
@@ -35,6 +35,11 @@ const canvasComp: React.FC<Props> = () => {
       moveSocketRef.current?.emit('outConnect', 'outCanvas')
     }
   }, [])
+
+  // muliplayer
+  // React.useEffect(()=>{
+    // moveSocketRef.current?.on('moveCharacter')
+  // })
 
   // canvas.context setup
   React.useEffect(()=>{
@@ -53,12 +58,13 @@ const canvasComp: React.FC<Props> = () => {
     if (canvasElement.current === null || ctx === null || moveSocketRef.current === null) return;
     setUser(new Player({
       canvas: canvasElement.current,
-      ctx: ctx,
+      ctx,
+      id: nickName.current,
       position: {
         x: 0,
         y: 0
       },
-      color,
+      color: color.current,
       moveSocket: moveSocketRef.current
     }))
   }, [ctx])
@@ -66,7 +72,7 @@ const canvasComp: React.FC<Props> = () => {
   // Player online
   React.useEffect(()=>{
     if (user === null) return;
-    serverSocketRef.current?.emit('enterUser', {id: nickName.current, position: user.position});
+    serverSocketRef.current?.emit('enterUser', {id: nickName.current, position: user.position, color: color.current});
   }, [user])
 
   // animation
@@ -81,7 +87,7 @@ const canvasComp: React.FC<Props> = () => {
       // multiplayer
       if (onlineUser.length > 0) {
         onlineUser.forEach((element: onlinePlayer) => {
-          element.info.multiPlayer();
+          element.info.multiplayer();
         })
       }
     }
