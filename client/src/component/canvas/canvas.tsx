@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext } from 'react';
 import './canvas.css'
-import { Player } from './character/character'
+import { UserCharacter } from './character/userCharacter'
 import { field } from './field/field'
 import { keydownHandler, keyupHandler } from './event/keyboard'
 import { io, Socket } from 'socket.io-client'
@@ -8,10 +8,6 @@ import { useLocation, Location, useNavigate, NavigateFunction } from 'react-rout
 
 // type
 interface Props {};
-interface onlinePlayer {
-  id: string,
-  info: Player
-}
 
 // component
 const canvasComp: React.FC<Props> = () => {
@@ -22,8 +18,7 @@ const canvasComp: React.FC<Props> = () => {
   const serverSocketRef = React.useRef<Socket | null>(null);
   const moveSocketRef = React.useRef<Socket | null>(null);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
-  const [ user, setUser ] = React.useState<Player | null>(null);
-  const [ onlineUser, setOnlineUser ] = React.useState<onlinePlayer[]>([]);
+  const [ user, setUser ] = React.useState<UserCharacter | null>(null);
   
   // function
   // socket connect
@@ -56,7 +51,7 @@ const canvasComp: React.FC<Props> = () => {
   // new Player setup
   React.useEffect(()=>{
     if (canvasElement.current === null || ctx === null || moveSocketRef.current === null) return;
-    setUser(new Player({
+    setUser(new UserCharacter({
       canvas: canvasElement.current,
       ctx,
       id: nickName.current,
@@ -85,11 +80,6 @@ const canvasComp: React.FC<Props> = () => {
       user.update()
 
       // multiplayer
-      if (onlineUser.length > 0) {
-        onlineUser.forEach((element: onlinePlayer) => {
-          element.info.multiplayer();
-        })
-      }
     }
     animation();
   }, [user])

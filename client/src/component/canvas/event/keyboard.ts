@@ -1,7 +1,7 @@
-import { Player } from '../character/character'
+import { UserCharacter } from '../character/userCharacter'
 
 // keydown event
-export function keydownHandler(event: KeyboardEvent ,player: Player): void {
+export function keydownHandler(event: KeyboardEvent ,UserCharacter: UserCharacter): void {
   switch (event.key) {
     case 'ArrowRight' :
       event.preventDefault();
@@ -16,10 +16,10 @@ export function keydownHandler(event: KeyboardEvent ,player: Player): void {
       event.preventDefault();
       break
   }
-  player.pressedKey[event.key] = true
+  UserCharacter.pressedKey[event.key] = true
 }
 // keyup event
-export function keyupHandler(event: KeyboardEvent, player: Player): void {
+export function keyupHandler(event: KeyboardEvent, UserCharacter: UserCharacter): void {
   switch (event.key) {
     case 'ArrowRight' :
       event.preventDefault();
@@ -34,5 +34,5 @@ export function keyupHandler(event: KeyboardEvent, player: Player): void {
       event.preventDefault();
       break
   }
-  player.pressedKey[event.key] = false
+  UserCharacter.pressedKey[event.key] = false
 }
