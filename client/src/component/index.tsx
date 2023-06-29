@@ -9,9 +9,7 @@ import './index.css'
 
 const rootElement: Root = createRoot(document.getElementById("root") as HTMLElement)
 rootElement.render(
-    <React.StrictMode>
-      <Router>
-        <App />
-      </Router>
-    </React.StrictMode>
+    <Router>
+      <App />
+    </Router>
   )
