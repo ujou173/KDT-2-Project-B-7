@@ -64,4 +64,8 @@ export class Player {
       }
     }
   }
+
+  multiPlayer(): void {
+    this.draw();
+  }
 }

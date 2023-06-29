@@ -81,7 +81,7 @@ const canvasComp: React.FC<Props> = () => {
       // multiplayer
       if (onlineUser.length > 0) {
         onlineUser.forEach((element: onlinePlayer) => {
-          element.info.update();
+          element.info.multiPlayer();
         })
       }
     }
