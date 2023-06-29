@@ -1,5 +1,5 @@
 import { PlayerProps } from './charType'
-import { pixel } from '../common'
+import { pixel } from '../canvas-common'
 import { Socket } from 'socket.io-client'
 
 // character
