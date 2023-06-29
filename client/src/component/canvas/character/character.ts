@@ -5,8 +5,8 @@ import { pixel } from '../canvas-common'
 export class Player {
   readonly c: HTMLCanvasElement
   readonly ctx: CanvasRenderingContext2D
-  id: string
-  color: string
+  readonly id: string
+  readonly color: string
   position: {
     x: number,
     y: number

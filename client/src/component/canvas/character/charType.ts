@@ -24,3 +24,15 @@ export interface UserCharacterProps {
   },
   moveSocket: Socket
 }
+
+// multiplayer user Type
+export interface MultiplayerUserProps {
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+  id: string,
+  color: string
+  position: {
+    x: number,
+    y: number
+  },
+}
