@@ -1,6 +1,8 @@
 import React, { ReactNode, useContext } from 'react';
 import './canvas.css'
 import { UserCharacter } from './character/userCharacter'
+import { MultiplayerUser } from './character/multiplayer'
+import { MultiplayerData } from './character/charType';
 import { field } from './field/field'
 import { keydownHandler, keyupHandler } from './event/keyboard'
 import { io, Socket } from 'socket.io-client'
@@ -17,11 +19,12 @@ const canvasComp: React.FC<Props> = () => {
   const color = React.useRef<string>(useLocation().state.color);
   const serverSocketRef = React.useRef<Socket | null>(null);
   const moveSocketRef = React.useRef<Socket | null>(null);
+  const onlineUsers = React.useRef<MultiplayerUser[]>([]);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<UserCharacter | null>(null);
-  
-  // function
-  // socket connect
+
+  // socket connect ================================================
+
   React.useEffect(()=>{
     serverSocketRef.current = io();
     moveSocketRef.current = io('/character-move');
@@ -31,12 +34,14 @@ const canvasComp: React.FC<Props> = () => {
     }
   }, [])
 
-  // muliplayer
-  // React.useEffect(()=>{
-    // moveSocketRef.current?.on('moveCharacter')
-  // })
+  // ===============================================================
 
-  // canvas.context setup
+
+
+
+  // canvas setup ===========================================
+
+  // create context
   React.useEffect(()=>{
     if (canvasElement.current === null) return;
     setCtx(canvasElement.current.getContext('2d'));
@@ -48,7 +53,14 @@ const canvasComp: React.FC<Props> = () => {
     field(canvasElement.current, ctx);
   }, [ctx])
 
-  // new Player setup
+  // ===================================================================
+
+
+
+
+  // user ==============================================================
+
+  // init my character
   React.useEffect(()=>{
     if (canvasElement.current === null || ctx === null || moveSocketRef.current === null) return;
     setUser(new UserCharacter({
@@ -64,13 +76,36 @@ const canvasComp: React.FC<Props> = () => {
     }))
   }, [ctx])
 
-  // Player online
+  // insert my character to onlineUsers
   React.useEffect(()=>{
     if (user === null) return;
-    serverSocketRef.current?.emit('enterUser', {id: nickName.current, position: user.position, color: color.current});
+    'what code here?'
   }, [user])
 
-  // animation
+  // create multiplayer user
+  const newMuiltiCharacter: (payload: MultiplayerData) => MultiplayerUser | undefined = React.useCallback((payload)=>{
+    if (canvasElement.current === null || ctx === null) return;
+    return new MultiplayerUser({
+      canvas: canvasElement.current,
+      ctx,
+      id: payload.id,
+      color: payload.color,
+      position: payload.position
+    })
+  }, [])
+
+  // get users
+  const getUsers = React.useCallback(()=>{
+    console.log(onlineUsers.current);
+  }, [])
+
+  // ==================================================================
+
+
+
+
+  // animation ==========================================================
+
   React.useEffect(()=>{
     const animation: () => void = function() {
       requestAnimationFrame(animation);
@@ -78,13 +113,25 @@ const canvasComp: React.FC<Props> = () => {
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, canvasElement.current.width, canvasElement.current.height);
       user.update()
-
+      
       // multiplayer
+      if (onlineUsers.current.length > 0) {
+        onlineUsers.current.forEach((element: MultiplayerUser) => {
+          element.update();
+        })
+      }
     }
     animation();
   }, [user])
 
-  // event management
+  // ======================================================================
+
+
+
+
+  // event management =======================================================
+
+  // keyboard event
   React.useEffect(()=>{
     if (user === null) return;
     addEventListener('keydown', (e: KeyboardEvent): void => {keydownHandler(e, user)});
@@ -94,9 +141,38 @@ const canvasComp: React.FC<Props> = () => {
       removeEventListener('keyup', (e: KeyboardEvent): void => {keyupHandler(e, user)});
     }
   }, [user])
+
+  // Player online
+  React.useEffect(()=>{
+    if (user === null) return;
+    serverSocketRef.current?.emit('enterUser', {id: nickName.current, position: user.position, color: color.current});
+  }, [user])
+
+  // socket event
+  React.useEffect(()=>{
+    // enter user
+    serverSocketRef.current?.on('enterUser', (payload: MultiplayerData) => {
+      const newUser: MultiplayerUser | undefined = newMuiltiCharacter(payload);
+      if (newUser) {
+        onlineUsers.current.push(newUser);
+      }
+    });
+
+    // muliplayer
+    // React.useEffect(()=>{
+      // moveSocketRef.current?.on('moveCharacter')
+    // })
+
+    // clean-up event
+    return () => {
+      serverSocketRef.current?.removeAllListeners('enterUser');
+    }
+  }, [])
+
   return (
     <>
       <canvas ref={canvasElement} className='canvas'></canvas>
+      <button onClick={getUsers}>누구 있어</button>
     </>
   )
 }
