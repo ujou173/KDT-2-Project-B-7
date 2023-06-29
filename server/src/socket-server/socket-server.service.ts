@@ -31,7 +31,7 @@ export class SocketServerService {
     this.onlineUser[userInfo.id] = userInfo.info;
   }
   deleteOnlineUser(userID: string): void {
-    delete this.onlineUser.userID
+    delete this.onlineUser[userID]
   }
   positionUpdate(userInfo: {id: string, position: {x:number, y:number}}): void {
     this.onlineUser[userInfo.id].position = userInfo.position

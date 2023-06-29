@@ -50,8 +50,8 @@ const EntryCanvas: React.FC<Props> = () => {
           <legend>
             캐릭터 설정
           </legend>
-          닉네임 설정 : <input type="text" maxLength={12} onChange={nickNameHandle} value={nickName} /><br />
-          플레이어 색상 설정 : <select onChange={colorHandle}>
+          닉네임 설정 : <input type="text" maxLength={12} onChange={nickNameHandle} value={nickName} placeholder='닉네임 입력'/><br />
+          플레이어 색상 설정 : <select onChange={colorHandle} title='색상 입력'>
             <option value="red">빨강</option>
             <option value="blue">파랑</option>
             <option value="yellow">노랑</option>
