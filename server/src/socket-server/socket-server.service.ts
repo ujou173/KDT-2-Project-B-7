@@ -2,41 +2,41 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 
 //type
-export interface UserInfo {
-  [key: string] : {
-    id: string,
-    position: {
-      x: number,
-      y: number
-    }
-  }
+// user's data
+export interface UserData {
+  id: string,
+  position: {
+    x: number,
+    y: number
+  },
+  color: string
 }
-export interface InputUser {
+// insert user
+export interface SocketInfo {
   socketID: string,
-  info : {
-    id: string
-    position: {
-      x: number,
-      y: number
-    }
-  }
+  info : UserData
+}
+
+// online users type
+export interface OnlineUser {
+  [key: string] : UserData
 }
 
 @Injectable()
 export class SocketServerService {
-  private onlineUser: UserInfo = {};
+  private onlineUser: OnlineUser = {};
 
   getOnlineUser(): string[] {
     const result:string[] = Object.values(this.onlineUser).map(element => element.id)
     return result;
   }
-  addOnlineUser(userInfo: InputUser): void {
+  addOnlineUser(userInfo: SocketInfo): void {
     this.onlineUser[userInfo.socketID] = userInfo.info;
   }
   deleteOnlineUser(userID: string): void {
     delete this.onlineUser[userID]
   }
-  positionUpdate(userInfo: {id: string, position: {x:number, y:number}}): void {
+  positionUpdate(userInfo: {id: UserData['id'], position: UserData['position']}): void {
     this.onlineUser[userInfo.id].position = userInfo.position
   }
   checkDuplicationNickName(userInfo: string): boolean {

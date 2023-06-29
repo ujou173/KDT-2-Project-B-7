@@ -1,16 +1,8 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { SocketServerService } from './socket-server.service';
+import { SocketServerService, UserData } from './socket-server.service';
 import { serverAddress } from 'common/server-common';
 import * as fs from 'fs';
-
-interface ClientInputData {
-  id: string,
-  position: {
-    x: number,
-    y: number
-  }
-}
 
 @WebSocketGateway({
   cors: {
@@ -29,8 +21,8 @@ export class SocketServerGateway implements OnGatewayDisconnect {
 
   // event
   @SubscribeMessage('enterUser')
-  enterUser(client: Socket, payload: ClientInputData): void {
-    this.SocketServerService.addOnlineUser({socketID: client.id, info: {id: payload.id, position: payload.position}});
+  enterUser(client: Socket, payload: UserData): void {
+    this.SocketServerService.addOnlineUser({socketID: client.id, info: payload});
   }
   @SubscribeMessage('getOnline')
   getOnline(client: Socket, payload: string): void {
