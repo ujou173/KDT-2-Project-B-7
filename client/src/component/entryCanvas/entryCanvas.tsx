@@ -1,9 +1,18 @@
 import React from 'react';
 import { useNavigate, NavigateFunction } from 'react-router-dom';
-import { SocketContext } from '../App'
+import { io, Socket } from 'socket.io-client';
 
 interface Props {}
 const EntryCanvas: React.FC<Props> = () => {
+  // webSocket
+  const serverSocketRef = React.useRef<Socket | null>(null)
+  React.useEffect(()=>{
+    serverSocketRef.current = io()
+    return () => {
+      serverSocketRef.current?.emit('outConnect', 'outEntryCanvas')
+    }
+  }, [])
+
   // navigator
   const navigate: NavigateFunction = useNavigate();
   
@@ -13,15 +22,14 @@ const EntryCanvas: React.FC<Props> = () => {
   // input's value
   const [ nickName, setNickName ] = React.useState<string>("");
   const [ color, setColor ] = React.useState("red");
-  const { serverSocket } = React.useContext(SocketContext)
   
   // input -> onChange handler
   const nickNameHandle: (e: React.ChangeEvent<HTMLInputElement>) => void = React.useCallback(e=>{
     setNickName(e.target.value)
-  }, [formElement])
+  }, [])
   const colorHandle: (e: React.ChangeEvent<HTMLSelectElement>) => void = React.useCallback(e=> {
     setColor(e.target.value)
-  }, [formElement])
+  }, [])
   
   // form -> onSubmit handler
   const submitHandler: (e: React.FormEvent<HTMLFormElement>) => void = React.useCallback(e => {
@@ -31,10 +39,10 @@ const EntryCanvas: React.FC<Props> = () => {
       return;
     }
 
-    serverSocket.removeAllListeners('checkNickName');
+    serverSocketRef.current?.removeAllListeners('checkNickName');
 
-    serverSocket.emit('checkNickName', nickName);
-    serverSocket.on('checkNickName', (data: boolean) => {
+    serverSocketRef.current?.emit('checkNickName', nickName);
+    serverSocketRef.current?.on('checkNickName', (data: boolean) => {
       if (data === false) {
         navigate('/main', {state: {nickName, color}})
       } else {

@@ -15,4 +15,8 @@ export class CharacterMoveGateway {
   moveCharacter(client: Socket, payload: {x: number, y: number}): void {
     client.emit('enterUser', `너의 좌표는 x: ${payload.x}, y: ${payload.y}야!`)
   }
+  @SubscribeMessage('outConnect')
+  disconnect(client: Socket, payload: string) {
+    client.disconnect();
+  }
 }

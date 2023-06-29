@@ -3,8 +3,8 @@ import './canvas.css'
 import { Player } from './character/character'
 import { field } from './field/field'
 import { keydownHandler, keyupHandler } from './event/keyboard'
-import { Socket } from 'socket.io-client'
-import { useLocation, Location } from 'react-router-dom'
+import { io, Socket } from 'socket.io-client'
+import { useLocation, Location, useNavigate, NavigateFunction } from 'react-router-dom'
 
 // type
 interface Props {};
@@ -17,13 +17,25 @@ interface onlinePlayer {
 const canvasComp: React.FC<Props> = () => {
   // variable management
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
-  const [ nickName ] = React.useState<string>(useLocation().state.nickName);
+  const nickName = React.useRef<string>(useLocation().state.nickName);
+  const serverSocketRef = React.useRef<Socket | null>(null);
+  const moveSocketRef = React.useRef<Socket | null>(null);
   const [ color ] = React.useState<string>(useLocation().state.color);
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<Player | null>(null);
   const [ onlineUser, setOnlineUser ] = React.useState<onlinePlayer[]>([]);
   
   // function
+  // serverSocket connect
+  React.useEffect(()=>{
+    serverSocketRef.current = io();
+    moveSocketRef.current = io('/character-move');
+    return ()=>{
+      serverSocketRef.current?.emit('outConnect', 'outCanvas')
+      moveSocketRef.current?.emit('outConnect', 'outCanvas')
+    }
+  }, [])
+
   // canvas.context setup
   React.useEffect(()=>{
     if (canvasElement.current === null) return;
@@ -38,7 +50,7 @@ const canvasComp: React.FC<Props> = () => {
 
   // new Player setup
   React.useEffect(()=>{
-    if (canvasElement.current === null || ctx === null) return;
+    if (canvasElement.current === null || ctx === null || moveSocketRef.current === null) return;
     setUser(new Player({
       canvas: canvasElement.current,
       ctx: ctx,
@@ -47,14 +59,14 @@ const canvasComp: React.FC<Props> = () => {
         y: 0
       },
       color,
-      moveSocket
+      moveSocket: moveSocketRef.current
     }))
   }, [ctx])
 
   // Player online
   React.useEffect(()=>{
     if (user === null) return;
-    serverSocket.emit('enterUser', {id: nickName, info: user.position});
+    serverSocketRef.current?.emit('enterUser', {id: nickName.current, position: user.position});
   }, [user])
 
   // animation
@@ -86,15 +98,6 @@ const canvasComp: React.FC<Props> = () => {
       removeEventListener('keyup', (e: KeyboardEvent): void => {keyupHandler(e, user)});
     }
   }, [user])
-
-  // disconnect Event
-  React.useEffect(()=>{
-    if (nickName === "") return;
-    serverSocket.emit('outUser', nickName);
-  }, [nickName])
-  serverSocket.on('disconnect', ()=>{
-    serverSocket.emit('outUser', nickName);
-  })
   return (
     <>
       <canvas ref={canvasElement} className='canvas'></canvas>
