@@ -36,3 +36,13 @@ export interface MultiplayerUserProps {
     y: number
   },
 }
+
+// payload user data
+export interface MultiplayerData {
+  id: string,
+  color: string,
+  position: {
+    x: number,
+    y: number
+  }
+}
