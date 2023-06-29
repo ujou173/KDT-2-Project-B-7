@@ -1,0 +1,1 @@
+export const serverAddress: string = "http://localhost:3500"

@@ -1,10 +1,11 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { serverAddress } from 'common/server-common';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   namespace: 'character-move',
   cors: {
-    origin: 'http://localhost:3500'
+    origin: serverAddress
   }
 })
 export class CharacterMoveGateway {
