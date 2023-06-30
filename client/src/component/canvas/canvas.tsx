@@ -20,7 +20,7 @@ const canvasComp: React.FC<Props> = () => {
   const color = React.useRef<string>(useLocation().state.color);
   const serverSocketRef = React.useRef<Socket | null>(null);
   const moveSocketRef = React.useRef<Socket | null>(null);
-  const [ onlineUsers, setOnlineUsers ] = React.useState<MultiplayerUser[]>([]);
+  const [ onlineUsers, setOnlineUsers ] = React.useState<{[nickName: string] : MultiplayerUser}>({});
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<UserCharacter | null>(null);
 
@@ -104,8 +104,8 @@ const canvasComp: React.FC<Props> = () => {
       ctx.fillRect(0, 0, canvasElement.current.width, canvasElement.current.height);
       
       // multiplayer
-      if (onlineUsers.length > 0) {
-        onlineUsers.forEach((element: MultiplayerUser): void => {
+      if (Object.keys(onlineUsers).length > 0) {
+        Object.values(onlineUsers).forEach((element: MultiplayerUser): void => {
           element.update();
         })
       }
@@ -144,9 +144,10 @@ const canvasComp: React.FC<Props> = () => {
   React.useEffect(()=>{
     // enter user
     moveSocketRef.current?.on('enterUser', (payload: MultiplayerData) => {
+      const userNickname: string = payload.id
       const newUser: MultiplayerUser | undefined = newMuiltiCharacter(payload);
       if (newUser) {
-        setOnlineUsers(prevUsers => [...prevUsers, newUser])
+        setOnlineUsers(prevUsers => ({...prevUsers, newUser}))
       }
     });
 
@@ -155,27 +156,22 @@ const canvasComp: React.FC<Props> = () => {
       data.forEach(element => {
         const newUser: MultiplayerUser | undefined = newMuiltiCharacter(element);
         if (newUser) {
-          setOnlineUsers(prevUsers => [...prevUsers, newUser])
+          setOnlineUsers(prevUsers => ({...prevUsers, newUser}))
         }
       })
     });
 
     // muliplayer
     moveSocketRef.current?.on('moveCharacter', (data: {id: string, position: MultiplayerData['position']}) => {
-      setOnlineUsers(prevUsers => {
-        const updateArray: MultiplayerUser[] = prevUsers.map((element: MultiplayerUser) => {
-          if (element.id === data.id) {
-            element.positionUpdate(data.position);
-          }
-          return element
-        })
-        return updateArray
-      })
+      // setOnlineUsers(prevUser => {
+        // prevUser[data.id].positionUpdate;
+        // return {}
+      // })
     })
 
     // exit user
     moveSocketRef.current?.on('exitUser', (target: string) => {
-      
+
     });
 
     // server offline
@@ -217,6 +213,11 @@ const canvasComp: React.FC<Props> = () => {
       moveSocketRef.current?.removeAllListeners('test');
     }
   }, [moveSocketRef.current, serverSocketRef.current])
+
+  // test
+  React.useEffect(()=>{
+    console.log(onlineUsers)
+  }, [onlineUsers])
 
   // ========================================================================
 
