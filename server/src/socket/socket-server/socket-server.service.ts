@@ -21,7 +21,7 @@ export interface OnlineUser {
   [key: string] : UserData
 }
 
-@Injectable({ scope: Scope.DEFAULT })
+@Injectable()
 export class SocketServerService {
   private onlineUser: OnlineUser = {};
 
@@ -35,8 +35,8 @@ export class SocketServerService {
   deleteOnlineUser(userID: string): void {
     delete this.onlineUser[userID]
   }
-  positionUpdate(userInfo: {id: UserData['id'], position: UserData['position']}): void {
-    this.onlineUser[userInfo.id].position = userInfo.position
+  positionUpdate(userInfo: {socketID: SocketInfo['socketID'], position: UserData['position']}): void {
+    this.onlineUser[userInfo.socketID].position = userInfo.position
   }
   checkDuplicationNickName(userInfo: string): boolean {
     const result = this.getOnlineUser().includes(userInfo);

@@ -14,8 +14,8 @@ export class UserCharacter extends Player {
     this.moveSocket = moveSocket;
     this.pressedKey = {}
   }
-  private positionUpdate(): {x: number, y: number} {
-    return {x: this.position.x, y: this.position.y}
+  private positionUpdate(): {id: string, position: {x: number, y: number}} {
+    return {id: this.id, position: this.position}
   }
 
   update(): void {

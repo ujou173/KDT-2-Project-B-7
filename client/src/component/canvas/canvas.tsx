@@ -109,7 +109,6 @@ const canvasComp: React.FC<Props> = () => {
       if (canvasElement.current === null || ctx === null || user === null) return;
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, canvasElement.current.width, canvasElement.current.height);
-      user.update()
       
       // multiplayer
       if (onlineUsers.length > 0) {
@@ -117,6 +116,9 @@ const canvasComp: React.FC<Props> = () => {
           element.update();
         })
       }
+
+      // user player
+      user.update()
     }
     animation();
   }, [user, onlineUsers])
@@ -142,13 +144,13 @@ const canvasComp: React.FC<Props> = () => {
   // Player online
   React.useEffect(()=>{
     if (user === null) return;
-    serverSocketRef.current?.emit('enterUser', {id: nickName.current, position: user.position, color: color.current});
+    moveSocketRef.current?.emit('enterUser', {id: nickName.current, position: user.position, color: color.current});
   }, [user])
 
   // socket event
   React.useEffect(()=>{
     // enter user
-    serverSocketRef.current?.on('enterUser', (payload: MultiplayerData) => {
+    moveSocketRef.current?.on('enterUser', (payload: MultiplayerData) => {
       const newUser: MultiplayerUser | undefined = newMuiltiCharacter(payload);
       if (newUser) {
         setOnlineUsers(prevUsers => [...prevUsers, newUser])
@@ -156,13 +158,22 @@ const canvasComp: React.FC<Props> = () => {
     });
 
     // muliplayer
-    // React.useEffect(()=>{
-      // moveSocketRef.current?.on('moveCharacter')
-    // })
+    moveSocketRef.current?.on('moveCharacter', (data: {id: string, position: MultiplayerData['position']}) => {
+      setOnlineUsers(prevUsers => {
+        const updateArray: MultiplayerUser[] = prevUsers.map((element: MultiplayerUser) => {
+          if (element.id === data.id) {
+            element.positionUpdate(data.position);
+          }
+          return element
+        })
+        return updateArray
+      })
+    })
 
     // clean-up event
     return () => {
-      serverSocketRef.current?.removeAllListeners('enterUser');
+      moveSocketRef.current?.removeAllListeners('enterUser');
+      moveSocketRef.current?.removeAllListeners('moveCharacter');
     }
   }, [ctx])
 

@@ -1,6 +1,6 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { SocketServerService, UserData } from './socket-server.service';
+import { SocketServerService } from './socket-server.service';
 import { serverAddress } from 'common/server-common';
 
 @WebSocketGateway({
@@ -19,12 +19,6 @@ export class SocketServerGateway implements OnGatewayDisconnect {
   }
 
   // event
-  @SubscribeMessage('enterUser')
-  enterUser(client: Socket, payload: UserData): void {
-    this.socketServerService.addOnlineUser({socketID: client.id, info: payload});
-    client.broadcast.emit('enterUser', payload)
-    client.emit('test', this.socketServerService.getOnlineUser())
-  }
   @SubscribeMessage('getOnline')
   getOnline(client: Socket, payload: string): void {
     const data = this.socketServerService.getOnlineUser();
