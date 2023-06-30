@@ -1,6 +1,7 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { serverAddress } from 'common/server-common';
 import { Server, Socket } from 'socket.io';
+import { SocketServerService } from '../socket-server.service';
 
 @WebSocketGateway({
   namespace: 'character-move',
@@ -9,6 +10,7 @@ import { Server, Socket } from 'socket.io';
   }
 })
 export class CharacterMoveGateway {
+  constructor(private readonly SocketServerSerice: SocketServerService) {}
   @WebSocketServer()
   server: Server;
   @SubscribeMessage('moveCharacter')
