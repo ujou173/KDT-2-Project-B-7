@@ -157,6 +157,16 @@ const canvasComp: React.FC<Props> = () => {
       }
     });
 
+    // prev users
+    moveSocketRef.current?.on('prevUsers', (data: MultiplayerData[]) => {
+      data.forEach(element => {
+        const newUser: MultiplayerUser | undefined = newMuiltiCharacter(element);
+        if (newUser) {
+          setOnlineUsers(prevUsers => [...prevUsers, newUser])
+        }
+      })
+    });
+
     // muliplayer
     moveSocketRef.current?.on('moveCharacter', (data: {id: string, position: MultiplayerData['position']}) => {
       setOnlineUsers(prevUsers => {

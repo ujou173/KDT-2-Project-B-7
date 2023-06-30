@@ -46,4 +46,7 @@ export class SocketServerService {
     }
     return response;
   }
+  prevUsers(): UserData[] {
+    return Object.values(this.onlineUser)
+  }
 }

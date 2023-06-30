@@ -15,9 +15,9 @@ export class CharacterMoveGateway {
   server: Server;
   @SubscribeMessage('enterUser')
   enterUser(client: Socket, payload: UserData): void {
+    client.emit('prevUsers', this.socketServerService.prevUsers());
     this.socketServerService.addOnlineUser({socketID: client.id, info: payload});
     client.broadcast.emit('enterUser', payload)
-    client.emit('test', JSON.stringify(this.socketServerService.getOnlineUser()))
   }
   @SubscribeMessage('moveCharacter')
   moveCharacter(client: Socket, payload: {id: string, position: {x: number, y: number}}): void {
