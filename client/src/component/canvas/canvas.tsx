@@ -166,6 +166,23 @@ const canvasComp: React.FC<Props> = () => {
     }
   }, [ctx])
 
+  // test
+  React.useEffect(()=>{
+    serverSocketRef.current?.on('test', (data: any) => {
+      console.log(`서버소켓 테스트 데이터 : ${data}`)
+    })
+    moveSocketRef.current?.on('test', (data: any) => {
+      console.log(`무브소켓 테스트 데이터 : ${data}`)
+    })
+    
+    return () => {
+      serverSocketRef.current?.removeAllListeners('test');
+      moveSocketRef.current?.removeAllListeners('test');
+    }
+  }, [moveSocketRef.current, serverSocketRef.current])
+
+  // ========================================================================
+
   return (
     <>
       <canvas ref={canvasElement} className='canvas'></canvas>
