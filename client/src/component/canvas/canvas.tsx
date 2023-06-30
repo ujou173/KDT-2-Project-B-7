@@ -173,6 +173,11 @@ const canvasComp: React.FC<Props> = () => {
       })
     })
 
+    // exit user
+    moveSocketRef.current?.on('exitUser', (target: string) => {
+      
+    });
+
     // server offline
     serverSocketRef.current?.on('disconnect', () => {
       moveSocketRef.current?.emit('outConnect', 'outCanvas')
@@ -191,8 +196,9 @@ const canvasComp: React.FC<Props> = () => {
       moveSocketRef.current?.removeAllListeners('enterUser');
       moveSocketRef.current?.removeAllListeners('prevUsers');
       moveSocketRef.current?.removeAllListeners('moveCharacter');
-      serverSocketRef.current?.removeAllListeners('disconnect');
+      moveSocketRef.current?.removeAllListeners('exitUser');
       moveSocketRef.current?.removeAllListeners('disconnect');
+      serverSocketRef.current?.removeAllListeners('disconnect');
     }
   }, [ctx])
 
