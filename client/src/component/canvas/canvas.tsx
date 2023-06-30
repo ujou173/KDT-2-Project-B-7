@@ -14,6 +14,7 @@ interface Props {};
 // component
 const canvasComp: React.FC<Props> = () => {
   // variable management
+  const navigate: NavigateFunction = useNavigate();
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
   const nickName = React.useRef<string>(useLocation().state.nickName);
   const color = React.useRef<string>(useLocation().state.color);
@@ -172,10 +173,26 @@ const canvasComp: React.FC<Props> = () => {
       })
     })
 
+    // server offline
+    serverSocketRef.current?.on('disconnect', () => {
+      moveSocketRef.current?.emit('outConnect', 'outCanvas')
+      moveSocketRef.current?.disconnect();
+      alert('서버와 접속이 끊어졌습니다.');
+      navigate('/');
+    });
+    moveSocketRef.current?.on('disconnect', () => {
+      serverSocketRef.current?.emit('outConnect', 'outCanvas')
+      serverSocketRef.current?.disconnect();
+      navigate('/');
+    });
+
     // clean-up event
     return () => {
       moveSocketRef.current?.removeAllListeners('enterUser');
+      moveSocketRef.current?.removeAllListeners('prevUsers');
       moveSocketRef.current?.removeAllListeners('moveCharacter');
+      serverSocketRef.current?.removeAllListeners('disconnect');
+      moveSocketRef.current?.removeAllListeners('disconnect');
     }
   }, [ctx])
 
@@ -188,6 +205,7 @@ const canvasComp: React.FC<Props> = () => {
       console.log(`무브소켓 테스트 데이터 : ${data}`)
     })
     
+    // clean-up event
     return () => {
       serverSocketRef.current?.removeAllListeners('test');
       moveSocketRef.current?.removeAllListeners('test');
