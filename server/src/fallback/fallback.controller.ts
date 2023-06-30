@@ -6,7 +6,7 @@ import { Response } from 'express';
 export class FallbackController {
   constructor (private readonly FallbackService: FallbackService) {}
   
-  @Get()
+  @Get('*')
   serveReact(@Res() res: Response): void {
     res.sendFile(this.FallbackService.serveReact());
   }
