@@ -186,7 +186,7 @@ const canvasComp: React.FC<Props> = () => {
       navigate('/');
     });
 
-    // clean-up event
+    // socket event - clean-up event
     return () => {
       moveSocketRef.current?.removeAllListeners('enterUser');
       moveSocketRef.current?.removeAllListeners('prevUsers');
@@ -205,7 +205,7 @@ const canvasComp: React.FC<Props> = () => {
       console.log(`무브소켓 테스트 데이터 : ${data}`)
     })
     
-    // clean-up event
+    // test - clean-up event
     return () => {
       serverSocketRef.current?.removeAllListeners('test');
       moveSocketRef.current?.removeAllListeners('test');

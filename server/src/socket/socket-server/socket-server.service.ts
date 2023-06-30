@@ -25,19 +25,28 @@ export interface OnlineUser {
 export class SocketServerService {
   private onlineUser: OnlineUser = {};
 
+  // online user nickname
   getOnlineUser(): string[] {
     const result:string[] = Object.values(this.onlineUser).map(element => element.id)
     return result;
   }
+
+  // enter user
   addOnlineUser(userInfo: SocketInfo): void {
     this.onlineUser[userInfo.socketID] = userInfo.info;
   }
+
+  // exit user
   deleteOnlineUser(userID: string): void {
     delete this.onlineUser[userID]
   }
+
+  // user's moving
   positionUpdate(userInfo: {socketID: SocketInfo['socketID'], position: UserData['position']}): void {
     this.onlineUser[userInfo.socketID].position = userInfo.position
   }
+
+  // nickname check
   checkDuplicationNickName(userInfo: string): boolean {
     const result = this.getOnlineUser().includes(userInfo);
     let response: boolean = true;
@@ -46,6 +55,8 @@ export class SocketServerService {
     }
     return response;
   }
+
+  // previous user
   prevUsers(): UserData[] {
     return Object.values(this.onlineUser)
   }
