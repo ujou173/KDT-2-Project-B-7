@@ -173,6 +173,18 @@ const canvasComp: React.FC<Props> = () => {
       })
     })
 
+    // exit user
+    moveSocketRef.current?.on('exitUser', (target: string) => {
+      setOnlineUsers(prevUsers => {
+        const updateArray: MultiplayerUser[] = [...prevUsers]
+        const exitUser: number | undefined = prevUsers.findIndex(element => element.id === target)
+        if (exitUser !== -1) {
+          updateArray.splice(exitUser, 1)
+        }
+        return updateArray;
+      })
+    })
+
     // server offline
     serverSocketRef.current?.on('disconnect', () => {
       moveSocketRef.current?.emit('outConnect', 'outCanvas')
@@ -191,8 +203,9 @@ const canvasComp: React.FC<Props> = () => {
       moveSocketRef.current?.removeAllListeners('enterUser');
       moveSocketRef.current?.removeAllListeners('prevUsers');
       moveSocketRef.current?.removeAllListeners('moveCharacter');
-      serverSocketRef.current?.removeAllListeners('disconnect');
+      moveSocketRef.current?.removeAllListeners('exitUser');
       moveSocketRef.current?.removeAllListeners('disconnect');
+      serverSocketRef.current?.removeAllListeners('disconnect');
     }
   }, [ctx])
 

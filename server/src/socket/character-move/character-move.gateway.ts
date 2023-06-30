@@ -18,7 +18,7 @@ export class CharacterMoveGateway implements OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
     const target: string = this.socketServerService.filterUser(client.id);
     this.socketServerService.deleteOnlineUser(client.id);
-    this.server.emit('test', `무브 : 자동 아웃 : ${target}가 나갔습니다`);
+    this.server.emit('exitUser', target);
   }
 
   // enter user
