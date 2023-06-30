@@ -2,7 +2,6 @@ import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayDisconnec
 import { Server, Socket } from 'socket.io';
 import { SocketServerService, UserData } from './socket-server.service';
 import { serverAddress } from 'common/server-common';
-import * as fs from 'fs';
 
 @WebSocketGateway({
   cors: {
