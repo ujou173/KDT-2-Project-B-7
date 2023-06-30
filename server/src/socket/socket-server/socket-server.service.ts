@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
+import { Injectable, Scope } from '@nestjs/common';
 
 //type
 // user's data
@@ -22,7 +21,7 @@ export interface OnlineUser {
   [key: string] : UserData
 }
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class SocketServerService {
   private onlineUser: OnlineUser = {};
 

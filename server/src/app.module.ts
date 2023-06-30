@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { FallbackModule } from './fallback/fallback.module'
-import { SocketServerModule } from './socket-server/socket-server.module';
+import { FallbackModule } from './fallback/fallback.module';
+import { SocketModule } from './socket-server/Socket.module';
 
 @Module({
-  imports: [SocketServerModule, FallbackModule],
+  imports: [SocketModule, FallbackModule],
   providers: [AppService],
 })
 export class AppModule {}
