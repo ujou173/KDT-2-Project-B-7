@@ -88,14 +88,6 @@ const canvasComp: React.FC<Props> = () => {
     });
   }, [ctx])
 
-  // get users
-  // const getUsers = React.useCallback(()=>{
-  //   console.log(onlineUsers);
-  // }, [])
-  React.useEffect(()=>{
-    console.log(onlineUsers);
-  }, [onlineUsers])
-
   // ==================================================================
 
 
@@ -207,7 +199,6 @@ const canvasComp: React.FC<Props> = () => {
   return (
     <>
       <canvas ref={canvasElement} className='canvas'></canvas>
-      {/* <button onClick={getUsers}>누구 있어</button> */}
     </>
   )
 }
