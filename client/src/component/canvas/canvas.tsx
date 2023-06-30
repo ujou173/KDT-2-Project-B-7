@@ -163,10 +163,13 @@ const canvasComp: React.FC<Props> = () => {
 
     // muliplayer
     moveSocketRef.current?.on('moveCharacter', (data: {id: string, position: MultiplayerData['position']}) => {
-      // setOnlineUsers(prevUser => {
-        // prevUser[data.id].positionUpdate;
-        // return {}
-      // })
+      const target = onlineUsers[data.id]
+      target.positionUpdate(data.position)
+      const update = {
+        ...onlineUsers,
+        [data.id]: target
+      }
+      setOnlineUsers(update);
     })
 
     // exit user
