@@ -78,10 +78,7 @@ const canvasComp: React.FC<Props> = () => {
 
   // create multiplayer user
   const newMuiltiCharacter: (payload: MultiplayerData) => MultiplayerUser | undefined = React.useCallback((payload)=>{
-    console.log('페이로드 : ', payload);
-    console.log(`내가 보이면 실행된거야 캔버스 : ${canvasElement.current}, ctx: ${ctx}`)
     if (canvasElement.current === null || ctx === null) return;
-    console.log('내가 보이면 성공했을까?')
     return new MultiplayerUser({
       canvas: canvasElement.current,
       ctx,
@@ -89,7 +86,7 @@ const canvasComp: React.FC<Props> = () => {
       color: payload.color,
       position: payload.position
     });
-  }, [canvasElement, ctx])
+  }, [ctx])
 
   // get users
   // const getUsers = React.useCallback(()=>{
@@ -116,13 +113,13 @@ const canvasComp: React.FC<Props> = () => {
       
       // multiplayer
       if (onlineUsers.length > 0) {
-        onlineUsers.forEach((element: MultiplayerUser) => {
+        onlineUsers.forEach((element: MultiplayerUser): void => {
           element.update();
         })
       }
     }
     animation();
-  }, [user])
+  }, [user, onlineUsers])
 
   // ======================================================================
 
@@ -152,16 +149,8 @@ const canvasComp: React.FC<Props> = () => {
   React.useEffect(()=>{
     // enter user
     serverSocketRef.current?.on('enterUser', (payload: MultiplayerData) => {
-      console.log('누군가 들어왔다');
       const newUser: MultiplayerUser | undefined = newMuiltiCharacter(payload);
       if (newUser) {
-      //   let updateArray: MultiplayerUser[]
-      //   if (onlineUsers.length === 0) {
-      //     updateArray = [newUser]
-      //   } else {
-      //     updateArray = [...onlineUsers, newUser]
-      //   };
-      //   setOnlineUsers(updateArray);
         setOnlineUsers(prevUsers => [...prevUsers, newUser])
       }
     });
@@ -175,7 +164,7 @@ const canvasComp: React.FC<Props> = () => {
     return () => {
       serverSocketRef.current?.removeAllListeners('enterUser');
     }
-  }, [])
+  }, [ctx])
 
   return (
     <>
