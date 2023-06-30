@@ -10,6 +10,7 @@ export interface UserData {
   },
   color: string
 }
+
 // insert user
 export interface SocketInfo {
   socketID: string,
@@ -59,5 +60,14 @@ export class SocketServerService {
   // previous user
   prevUsers(): UserData[] {
     return Object.values(this.onlineUser)
+  }
+
+  // filter user
+  filterUser(socketID: SocketInfo['socketID']): string {
+    try {
+      return this.onlineUser[socketID].id;
+    } catch (e) {
+      return 'noneUser';
+    }
   }
 }
