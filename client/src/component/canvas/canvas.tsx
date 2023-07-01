@@ -156,7 +156,7 @@ const canvasComp: React.FC<Props> = () => {
       data.forEach(element => {
         const newUser: MultiplayerUser | undefined = newMuiltiCharacter(element);
         if (newUser) {
-          setOnlineUsers(prevUsers => ({...prevUsers, newUser}))
+          setOnlineUsers(prevUsers => ({...prevUsers, [element.id]: newUser}))
         }
       })
     });
@@ -199,7 +199,7 @@ const canvasComp: React.FC<Props> = () => {
       moveSocketRef.current?.removeAllListeners('disconnect');
       serverSocketRef.current?.removeAllListeners('disconnect');
     }
-  }, [ctx])
+  }, [ctx, onlineUsers])
 
   // test
   React.useEffect(()=>{
