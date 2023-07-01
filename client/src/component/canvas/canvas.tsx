@@ -147,7 +147,7 @@ const canvasComp: React.FC<Props> = () => {
       const userNickname: string = payload.id
       const newUser: MultiplayerUser | undefined = newMuiltiCharacter(payload);
       if (newUser) {
-        setOnlineUsers(prevUsers => ({...prevUsers, newUser}))
+        setOnlineUsers(prevUsers => ({...prevUsers, [userNickname]: newUser}))
       }
     });
 
@@ -163,9 +163,9 @@ const canvasComp: React.FC<Props> = () => {
 
     // muliplayer
     moveSocketRef.current?.on('moveCharacter', (data: {id: string, position: MultiplayerData['position']}) => {
-      const target = onlineUsers[data.id]
+      const target: MultiplayerUser = onlineUsers[data.id]
       target.positionUpdate(data.position)
-      const update = {
+      const update: {[nickName: string]: MultiplayerUser} = {
         ...onlineUsers,
         [data.id]: target
       }
@@ -174,7 +174,9 @@ const canvasComp: React.FC<Props> = () => {
 
     // exit user
     moveSocketRef.current?.on('exitUser', (target: string) => {
-
+      const prevUsers: {[nickName: string]: MultiplayerUser} = {...onlineUsers};
+      delete prevUsers[target];
+      setOnlineUsers(prevUsers)
     });
 
     // server offline
