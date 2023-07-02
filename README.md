@@ -4,7 +4,7 @@
 
 <div align="center">
 
-<img src="/img/CSS%20%EC%BB%A4%EB%B2%84%EC%82%AC%EC%A7%84.png>
+<img src="/img/CSS%20%EC%BB%A4%EB%B2%84%EC%82%AC%EC%A7%84.png">
 
 </div>
 ## #목차
