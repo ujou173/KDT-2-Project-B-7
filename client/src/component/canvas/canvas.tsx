@@ -24,9 +24,6 @@ const canvasComp: React.FC<Props> = () => {
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<UserCharacter | null>(null);
 
-  const [ canvasScale, setCanvasScale ] = React.useState<number>(1.5);
-
-
   // is ingame setting
   React.useEffect(()=>{
     const root = document.getElementById('root');
@@ -131,7 +128,7 @@ const canvasComp: React.FC<Props> = () => {
       
     }
     animation();
-  }, [user, onlineUsers, canvasScale])
+  }, [user, onlineUsers])
 
   // ======================================================================
 
@@ -221,36 +218,6 @@ const canvasComp: React.FC<Props> = () => {
   }, [ctx, onlineUsers])
 
   // ========================================================================
-
-  // test
-  const handleWheel = React.useCallback((e: WheelEvent) => {
-    canvasElement.current?.removeEventListener('wheel', handleWheel)
-    if (Math.sign(e.deltaY) < 0) {
-      setCanvasScale(prevValue => prevValue + 0.1)
-    } else if (Math.sign(e.deltaY) > 0 && canvasScale > 1) {
-      setCanvasScale(prevValue => prevValue - 0.1)
-    }
-    requestAnimationFrame(()=>{
-      canvasElement.current?.addEventListener('wheel', handleWheel);
-    })
-  }, [canvasScale])
-
-  React.useEffect(()=>{
-    ctx?.setTransform(1,0,0,1,0,0);
-    ctx?.scale(canvasScale, canvasScale);
-  }, [ctx,canvasScale])
-
-  React.useEffect(()=>{
-    console.log(canvasScale);
-  }, [canvasScale])
-
-  React.useEffect(()=>{
-    canvasElement.current?.addEventListener('wheel', handleWheel);
-    
-    return ()=>{
-      canvasElement.current?.removeEventListener('wheel', handleWheel);
-    }
-  }, [])
 
   return (
     <>
