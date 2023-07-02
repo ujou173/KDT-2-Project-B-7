@@ -18,35 +18,52 @@ export class UserCharacter extends Player {
     return {id: this.id, position: this.position}
   }
 
+  // move character
+  moveRight(): void {
+    this.position.x += pixel;
+  }
+  moveLeft(): void {
+    this.position.x -= pixel;
+  }
+  moveDown(): void {
+    this.position.y += pixel;
+  }
+  moveUp(): void {
+    this.position.y -= pixel;
+  }
+
   update(): void {
     super.draw();
+
+    // character move
     if (this.position.x + pixel <= this.c.width - pixel) {
       if (this.pressedKey.ArrowRight) {
-        this.position.x += pixel;
+        this.moveRight();
         this.moveSocket.emit('moveCharacter', this.positionUpdate())
         this.pressedKey.ArrowRight = false;
       }
     }
     if (this.position.x > 0) {
       if (this.pressedKey.ArrowLeft) {
-        this.position.x -= pixel;
+        this.moveLeft();
         this.moveSocket.emit('moveCharacter', this.positionUpdate())
         this.pressedKey.ArrowLeft = false;
       }
     }
     if (this.position.y + pixel <= this.c.height - pixel) {
       if (this.pressedKey.ArrowDown) {
-        this.position.y += pixel;
+        this.moveDown();
         this.moveSocket.emit('moveCharacter', this.positionUpdate())
         this.pressedKey.ArrowDown = false;
       }
     }
     if (this.position.y > 0) {
       if (this.pressedKey.ArrowUp) {
-        this.position.y -= pixel;
+        this.moveUp();
         this.moveSocket.emit('moveCharacter', this.positionUpdate())
         this.pressedKey.ArrowUp = false;
       }
     }
+
   }
 }
