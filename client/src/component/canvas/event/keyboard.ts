@@ -1,7 +1,8 @@
 import { UserCharacter } from '../character/userCharacter'
+import { MultiplayerUser } from '../character/multiplayer';
 
 // keydown event
-export function keydownHandler(event: KeyboardEvent ,UserCharacter: UserCharacter): void {
+export function keydownHandler(event: KeyboardEvent, UserCharacter: UserCharacter): void {
   switch (event.key) {
     case 'ArrowRight' :
       event.preventDefault();

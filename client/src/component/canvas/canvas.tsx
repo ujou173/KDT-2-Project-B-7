@@ -146,7 +146,7 @@ const canvasComp: React.FC<Props> = () => {
       removeEventListener('keydown', (e: KeyboardEvent): void => {keydownHandler(e, user)});
       removeEventListener('keyup', (e: KeyboardEvent): void => {keyupHandler(e, user)});
     }
-  }, [user])
+  }, [user, onlineUsers])
 
   // Player online
   React.useEffect(()=>{
@@ -163,6 +163,12 @@ const canvasComp: React.FC<Props> = () => {
       if (newUser) {
         setOnlineUsers(prevUsers => ({...prevUsers, [userNickname]: newUser}))
       }
+      if (user && newUser) {
+        user.onlineUsers = {
+          ...onlineUsers,
+          [userNickname]: newUser
+        }
+      }
     });
 
     // prev users
@@ -171,6 +177,12 @@ const canvasComp: React.FC<Props> = () => {
         const newUser: MultiplayerUser | undefined = newMuiltiCharacter(element);
         if (newUser) {
           setOnlineUsers(prevUsers => ({...prevUsers, [element.id]: newUser}))
+        }
+        if (user && newUser) {
+          user.onlineUsers = {
+            ...onlineUsers,
+            [element.id]: newUser
+          }
         }
       })
     });
@@ -184,12 +196,21 @@ const canvasComp: React.FC<Props> = () => {
         [data.id]: target
       }
       setOnlineUsers(update);
+      if (user) {
+        user.onlineUsers = {
+          ...onlineUsers,
+          [data.id]: target
+        }
+      }
     })
 
     // exit user
     moveSocketRef.current?.on('exitUser', (target: string) => {
       const prevUsers: {[nickName: string]: MultiplayerUser} = {...onlineUsers};
       delete prevUsers[target];
+      if (user) {
+        delete user.onlineUsers[target];
+      }
       setOnlineUsers(prevUsers)
     });
 
@@ -215,7 +236,7 @@ const canvasComp: React.FC<Props> = () => {
       moveSocketRef.current?.removeAllListeners('disconnect');
       serverSocketRef.current?.removeAllListeners('disconnect');
     }
-  }, [ctx, onlineUsers])
+  }, [user, ctx, onlineUsers])
 
   // ========================================================================
 
