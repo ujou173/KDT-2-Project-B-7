@@ -88,10 +88,7 @@ export class UserCharacter extends Player {
     return result
   }
 
-  update(): void {
-    super.draw();
-    this.nickname();
-
+  moveCharacter(): void {
     // character move
     if (this.position.x + pixel <= this.c.width - pixel) {
       if (this.pressedKey.ArrowRight) {
@@ -141,6 +138,11 @@ export class UserCharacter extends Player {
         }
       }
     }
+  }
 
+  update(): void {
+    super.draw();
+    this.nickname();
+    this.moveCharacter();
   }
 }
