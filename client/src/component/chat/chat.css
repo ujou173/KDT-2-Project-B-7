@@ -1,0 +1,8 @@
+.chat {
+  position: absolute;
+  width: 320px;
+  height: 100vh;
+  background: pink;
+  right: 0;
+  top: 0;
+}

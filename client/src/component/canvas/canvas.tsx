@@ -14,6 +14,7 @@ interface Props {};
 // component
 const canvasComp: React.FC<Props> = () => {
   // variable management
+  const main = document.getElementById('main');
   const navigate: NavigateFunction = useNavigate();
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
   const nickName = React.useRef<string>(useLocation().state.nickName);
@@ -54,6 +55,12 @@ const canvasComp: React.FC<Props> = () => {
 
 
   // canvas setup ===========================================
+  const resizeCanvas = React.useCallback(()=>{
+    if (!canvasElement.current || !main) return;
+    canvasElement.current.width = main.clientWidth;
+    canvasElement.current.height = main.clientHeight;
+    console.log('위쓰 : '+main.clientWidth, '헤이트 : '+main.clientHeight)
+  }, [main?.clientWidth, main?.clientHeight])
 
   // create context
   React.useEffect(()=>{
@@ -63,8 +70,8 @@ const canvasComp: React.FC<Props> = () => {
 
   // field
   React.useEffect(()=>{
-    if (canvasElement.current === null || ctx === null) return;
-    field(canvasElement.current, ctx);
+    if (!canvasElement.current || !ctx || !main) return;
+    field(canvasElement.current, ctx, main);
   }, [ctx])
 
   // ===================================================================
@@ -136,6 +143,19 @@ const canvasComp: React.FC<Props> = () => {
 
 
   // event management =======================================================
+
+  // resize event
+  React.useEffect(()=>{
+    const handleResize = () => {
+      resizeCanvas();
+    }
+    addEventListener('resize', handleResize);
+    console.log('일단 실행은 됐어')
+    // clean-up code
+    return () => {
+      removeEventListener('resize', handleResize);
+    }
+  }, [resizeCanvas])
 
   // keyboard event
   React.useEffect(()=>{
