@@ -49,7 +49,7 @@ module.exports = {
     historyApiFallback: true,
     proxy: {
       "/socket.io": {
-        target: "http://localhost:3500",
+        target: "http://localhost:4500",
         changeOrigin: true,
         secure: false
       }
