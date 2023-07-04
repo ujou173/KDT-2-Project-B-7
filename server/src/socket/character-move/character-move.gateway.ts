@@ -31,9 +31,9 @@ export class CharacterMoveGateway implements OnGatewayDisconnect {
 
   // user's moving
   @SubscribeMessage('moveCharacter')
-  moveCharacter(client: Socket, payload: {id: string, position: {x: number, y: number}}): void {
-    this.socketServerService.positionUpdate({socketID: client.id, position: payload.position});
-    client.broadcast.emit('moveCharacter', {id: payload.id, position: payload.position});
+  moveCharacter(client: Socket, payload: {id: string, movement: {x: number, y: number}}): void {
+    this.socketServerService.positionUpdate({socketID: client.id, movement: payload.movement});
+    client.broadcast.emit('moveCharacter', {id: payload.id, movement: payload.movement});
   }
 
   // exit user

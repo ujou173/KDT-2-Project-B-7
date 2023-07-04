@@ -19,20 +19,23 @@ export class UserCharacter extends Player {
   isMoveDown: boolean
   isMove: boolean
   field: Field
-  constructor({ canvas, ctx, id, color, position, moveSocket, field }: UserCharacterProps) {
-    super({ canvas, ctx, id, color, position })
+  constructor({ canvas, ctx, id, color, field, moveSocket, movement }: UserCharacterProps) {
+    super({ canvas, ctx, id, color, field, movement })
     this.moveSocket = moveSocket;
     this.pressedKey = {};
     this.onlineUsers = {};
+
+    // 움직일 수 있을까?
     this.isMoveRight = true;
     this.isMoveLeft = true;
     this.isMoveUp = true;
     this.isMoveDown = true;
     this.isMove = false
+
     this.field = field
   }
-  private positionUpdate(): {id: string, position: {x: number, y: number}} {
-    return {id: this.id, position: this.position}
+  private positionUpdate(): {id: string, movement: {x: number, y: number}} {
+    return {id: this.id, movement: this.movement}
   }
 
   nickname(): void {
@@ -45,18 +48,23 @@ export class UserCharacter extends Player {
 
   // move character
   moveRight(): void {
-    this.position.x += pixel;
+    this.movement.x++;
+    this.position.x = this.field.fieldCenter().x + (this.movement.x * pixel)
   }
   moveLeft(): void {
-    this.position.x -= pixel;
+    this.movement.x--;
+    this.position.x = this.field.fieldCenter().x + (this.movement.x * pixel)
   }
   moveDown(): void {
-    this.position.y += pixel;
+    this.movement.y++;
+    this.position.y = this.field.fieldCenter().y + (this.movement.y * pixel)
   }
   moveUp(): void {
-    this.position.y -= pixel;
+    this.movement.y--;
+    this.position.y = this.field.fieldCenter().y + (this.movement.y * pixel)
   }
 
+  // character bumpering
   checkMove(): boolean {
     let result: boolean = true;
     if (!this.isMove) {
@@ -99,6 +107,7 @@ export class UserCharacter extends Player {
           this.moveRight();
           this.moveSocket.emit('moveCharacter', this.positionUpdate())
           this.isMove = true;
+          // 이동속도 제한
           setTimeout(()=>{
             this.isMove = false;
           }, duration)
@@ -111,6 +120,7 @@ export class UserCharacter extends Player {
           this.moveLeft();
           this.moveSocket.emit('moveCharacter', this.positionUpdate())
           this.isMove = true;
+          // 이동속도 제한
           setTimeout(()=>{
             this.isMove = false;
           }, duration)
@@ -123,6 +133,7 @@ export class UserCharacter extends Player {
           this.moveDown();
           this.moveSocket.emit('moveCharacter', this.positionUpdate())
           this.isMove = true;
+          // 이동속도 제한
           setTimeout(()=>{
             this.isMove = false;
           }, duration)
@@ -135,6 +146,7 @@ export class UserCharacter extends Player {
           this.moveUp();
           this.moveSocket.emit('moveCharacter', this.positionUpdate())
           this.isMove = true;
+          // 이동속도 제한
           setTimeout(()=>{
             this.isMove = false;
           }, duration)

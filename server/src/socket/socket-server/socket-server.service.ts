@@ -4,7 +4,7 @@ import { Injectable, Scope } from '@nestjs/common';
 // user's data
 export interface UserData {
   id: string,
-  position: {
+  movement: {
     x: number,
     y: number
   },
@@ -43,8 +43,8 @@ export class SocketServerService {
   }
 
   // user's moving
-  positionUpdate(userInfo: {socketID: SocketInfo['socketID'], position: UserData['position']}): void {
-    this.onlineUser[userInfo.socketID].position = userInfo.position
+  positionUpdate(userInfo: {socketID: SocketInfo['socketID'], movement: UserData['movement']}): void {
+    this.onlineUser[userInfo.socketID].movement = userInfo.movement
   }
 
   // nickname check

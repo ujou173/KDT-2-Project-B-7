@@ -7,6 +7,7 @@ import { Field } from './field/field'
 import { keydownHandler, keyupHandler } from './event/keyboard'
 import { io, Socket } from 'socket.io-client'
 import { useLocation, Location, useNavigate, NavigateFunction } from 'react-router-dom'
+import { pixel } from './canvas-common';
 
 // type
 interface Props {};
@@ -15,6 +16,7 @@ interface Props {};
 const canvasComp: React.FC<Props> = () => {
   // variable management
   const main = document.querySelector<HTMLDivElement>('.main');
+  const statusBar = document.querySelector<HTMLDivElement>('.statusBar');
   const navigate: NavigateFunction = useNavigate();
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
   const nickName = React.useRef<string>(useLocation().state.nickName);
@@ -58,10 +60,24 @@ const canvasComp: React.FC<Props> = () => {
   // canvas setup ===========================================
 
   const resizeCanvas = React.useCallback(()=>{
-    if (!canvasElement.current || !main) return;
+    if (!canvasElement.current || !main || !statusBar) return;
     canvasElement.current.width = main.clientWidth;
-    canvasElement.current.height = main.clientHeight;
-  }, [main?.clientWidth, main?.clientHeight])
+    canvasElement.current.height = main.clientHeight - statusBar.clientHeight;
+    if (user) {
+      user.position = {
+        x: user.field.fieldCenter().x + (user.movement.x * pixel),
+        y: user.field.fieldCenter().y + (user.movement.y * pixel)
+      }
+    }
+    if (onlineUsers) {
+      Object.values(onlineUsers).forEach((element: MultiplayerUser)=>{
+        element.position = {
+          x: element.field.fieldCenter().x + (element.movement.x * pixel),
+          y: element.field.fieldCenter().y + (element.movement.y * pixel)
+        }
+      })
+    }
+  }, [canvasElement.current, main?.clientWidth, main?.clientHeight, field, user, onlineUsers, statusBar?.clientWidth, statusBar?.clientHeight])
 
   // create context
   React.useEffect(()=>{
@@ -73,7 +89,7 @@ const canvasComp: React.FC<Props> = () => {
   // field
   React.useEffect(()=>{
     if (!canvasElement.current || !ctx) return;
-    setField(new Field(canvasElement.current, ctx, {x: 1200, y: 500}))
+    setField(new Field(canvasElement.current, ctx, {x: 1500, y: 800}))
   }, [ctx])
 
   // ===================================================================
@@ -90,27 +106,25 @@ const canvasComp: React.FC<Props> = () => {
       canvas: canvasElement.current,
       ctx,
       id: nickName.current,
-      position: {
-        x: canvasElement.current.width / 2,
-        y: canvasElement.current.height / 2,
-      },
       color: color.current,
+      field,
       moveSocket: moveSocketRef.current,
-      field: field
+      movement: {x: 0, y: 0}
     }))
-  }, [ctx, field, resizeCanvas])
+  }, [field])
 
   // create multiplayer user
-  const newMuiltiCharacter: (payload: MultiplayerData) => MultiplayerUser | undefined = React.useCallback((payload)=>{
-    if (canvasElement.current === null || ctx === null) return;
+  const newMultiCharacter: (payload: MultiplayerData) => MultiplayerUser | undefined = React.useCallback((payload)=>{
+    if (!canvasElement.current || !ctx || !field) return;
     return new MultiplayerUser({
       canvas: canvasElement.current,
       ctx,
       id: payload.id,
       color: payload.color,
-      position: payload.position
+      field: field,
+      movement: payload.movement
     });
-  }, [ctx])
+  }, [field])
 
   // ==================================================================
 
@@ -130,8 +144,6 @@ const canvasComp: React.FC<Props> = () => {
 
       // field
       field?.drawField();
-
-      ctx.save();
       
       // multiplayer
       if (Object.keys(onlineUsers).length > 0) {
@@ -139,15 +151,12 @@ const canvasComp: React.FC<Props> = () => {
           element.update();
         })
       }
-
+      
       // user player
       user.update()
-      
-      ctx.restore();
-
     }
     animation();
-  }, [user, onlineUsers, field])
+  }, [user, onlineUsers, field, user?.position])
 
   // ======================================================================
 
@@ -182,7 +191,7 @@ const canvasComp: React.FC<Props> = () => {
   // Player online
   React.useEffect(()=>{
     if (user === null) return;
-    moveSocketRef.current?.emit('enterUser', {id: nickName.current, position: user.position, color: color.current});
+    moveSocketRef.current?.emit('enterUser', {id: nickName.current, movement: user.movement, color: color.current});
   }, [user])
 
   // socket event
@@ -190,7 +199,7 @@ const canvasComp: React.FC<Props> = () => {
     // enter user
     moveSocketRef.current?.on('enterUser', (payload: MultiplayerData) => {
       const userNickname: string = payload.id
-      const newUser: MultiplayerUser | undefined = newMuiltiCharacter(payload);
+      const newUser: MultiplayerUser | undefined = newMultiCharacter(payload);
       if (newUser) {
         setOnlineUsers(prevUsers => ({...prevUsers, [userNickname]: newUser}))
       }
@@ -205,7 +214,7 @@ const canvasComp: React.FC<Props> = () => {
     // prev users
     moveSocketRef.current?.on('prevUsers', (data: MultiplayerData[]) => {
       data.forEach(element => {
-        const newUser: MultiplayerUser | undefined = newMuiltiCharacter(element);
+        const newUser: MultiplayerUser | undefined = newMultiCharacter(element);
         if (newUser) {
           setOnlineUsers(prevUsers => ({...prevUsers, [element.id]: newUser}))
         }
@@ -219,9 +228,9 @@ const canvasComp: React.FC<Props> = () => {
     });
 
     // muliplayer
-    moveSocketRef.current?.on('moveCharacter', (data: {id: string, position: MultiplayerData['position']}) => {
+    moveSocketRef.current?.on('moveCharacter', (data: {id: string, movement: MultiplayerData['movement']}) => {
       const target: MultiplayerUser = onlineUsers[data.id]
-      target.positionUpdate(data.position)
+      target.positionUpdate(data.movement)
       const update: {[nickName: string]: MultiplayerUser} = {
         ...onlineUsers,
         [data.id]: target

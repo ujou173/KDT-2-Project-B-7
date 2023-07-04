@@ -11,7 +11,7 @@ const Main: React.FC<Props> = () => {
     <div className="main">
       <Canvas />
       {/* <Chat /> */}
-      {/* <StatusBar /> */}
+      <StatusBar />
     </div>
   )
 }

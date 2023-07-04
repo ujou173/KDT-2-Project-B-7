@@ -5,12 +5,16 @@ import { fontSize } from '../canvas-common';
 
 // multiplayer user
 export class MultiplayerUser extends Player {
-  constructor({ canvas, ctx, id, color, position }: MultiplayerUserProps) {
-    super({ canvas, ctx, id, color, position })
+  constructor({ canvas, ctx, id, color, field, movement }: MultiplayerUserProps) {
+    super({ canvas, ctx, id, color, field, movement })
   }
 
-  positionUpdate(position: Player["position"]) {
-    this.position = position;
+  positionUpdate(movement: Player["movement"]) {
+    this.movement = movement
+    this.position = {
+      x: this.field.fieldCenter().x + (this.movement.x * pixel),
+      y: this.field.fieldCenter().y + (this.movement.y * pixel),
+    };
   }
 
   nickname(): void {
