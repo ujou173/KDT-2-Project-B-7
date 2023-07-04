@@ -10,8 +10,8 @@ const Main: React.FC<Props> = () => {
   return (
     <div className="main">
       <Canvas />
-      <Chat />
-      <StatusBar />
+      {/* <Chat /> */}
+      {/* <StatusBar /> */}
     </div>
   )
 }

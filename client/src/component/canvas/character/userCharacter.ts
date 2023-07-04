@@ -93,7 +93,7 @@ export class UserCharacter extends Player {
 
   moveCharacter(): void {
     // character move
-    if (this.position.x + pixel <= this.field.size.x - pixel) {
+    if (this.position.x + pixel <= this.field.fieldEnd().x - pixel) {
       if (this.pressedKey.ArrowRight) {
         if (this.checkMove()) {
           this.moveRight();
@@ -105,7 +105,7 @@ export class UserCharacter extends Player {
         }
       }
     }
-    if (this.position.x > 0) {
+    if (this.position.x - pixel >= this.field.fieldStart().x) {
       if (this.pressedKey.ArrowLeft) {
         if (this.checkMove()) {
           this.moveLeft();
@@ -117,7 +117,7 @@ export class UserCharacter extends Player {
         }
       }
     }
-    if (this.position.y + pixel <= this.field.size.y - pixel) {
+    if (this.position.y + pixel <= this.field.fieldEnd().y - pixel) {
       if (this.pressedKey.ArrowDown) {
         if (this.checkMove()) {
           this.moveDown();
@@ -129,7 +129,7 @@ export class UserCharacter extends Player {
         }
       }
     }
-    if (this.position.y > 0) {
+    if (this.position.y - pixel >= this.field.fieldStart().y) {
       if (this.pressedKey.ArrowUp) {
         if (this.checkMove()) {
           this.moveUp();

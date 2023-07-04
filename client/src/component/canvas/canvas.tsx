@@ -56,6 +56,7 @@ const canvasComp: React.FC<Props> = () => {
 
 
   // canvas setup ===========================================
+
   const resizeCanvas = React.useCallback(()=>{
     if (!canvasElement.current || !main) return;
     canvasElement.current.width = main.clientWidth;
@@ -72,7 +73,7 @@ const canvasComp: React.FC<Props> = () => {
   // field
   React.useEffect(()=>{
     if (!canvasElement.current || !ctx) return;
-    setField(new Field(canvasElement.current, ctx, {x: 960, y: 540}))
+    setField(new Field(canvasElement.current, ctx, {x: 1200, y: 500}))
   }, [ctx])
 
   // ===================================================================
@@ -90,14 +91,14 @@ const canvasComp: React.FC<Props> = () => {
       ctx,
       id: nickName.current,
       position: {
-        x: 0,
-        y: 0
+        x: canvasElement.current.width / 2,
+        y: canvasElement.current.height / 2,
       },
       color: color.current,
       moveSocket: moveSocketRef.current,
       field: field
     }))
-  }, [ctx, field])
+  }, [ctx, field, resizeCanvas])
 
   // create multiplayer user
   const newMuiltiCharacter: (payload: MultiplayerData) => MultiplayerUser | undefined = React.useCallback((payload)=>{
@@ -129,6 +130,8 @@ const canvasComp: React.FC<Props> = () => {
 
       // field
       field?.drawField();
+
+      ctx.save();
       
       // multiplayer
       if (Object.keys(onlineUsers).length > 0) {
@@ -140,6 +143,8 @@ const canvasComp: React.FC<Props> = () => {
       // user player
       user.update()
       
+      ctx.restore();
+
     }
     animation();
   }, [user, onlineUsers, field])
@@ -157,11 +162,9 @@ const canvasComp: React.FC<Props> = () => {
       resizeCanvas();
     }
     addEventListener('resize', handleResize);
-    console.log('일단 실행은 됐어')
     // clean-up code
     return () => {
       removeEventListener('resize', handleResize);
-      console.log('clean-up했어')
     }
   }, [resizeCanvas])
 
