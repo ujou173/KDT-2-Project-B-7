@@ -5,4 +5,14 @@
   bottom: 0;
   left: 0;
   background-color: rgb(10, 7, 48);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userInfo > .characterColor {
+  width: 50px;
+  height: 50px;
+  background-color: black;
+  border-radius: 50%;
 }

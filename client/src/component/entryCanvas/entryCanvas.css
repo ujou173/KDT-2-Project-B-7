@@ -1,0 +1,32 @@
+.entryCanvas {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('./pixel_art_background_by_isa_draws_d9s3e6d-fullview.jpg');
+  background-size: cover;
+}
+
+.entryCanvas > .colorPaper {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(116, 71, 29, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.entryCanvas > .colorPaper > form {
+  width: 1000px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  box-shadow: 10px, 10px, orange;
+  text-align: center;
+}
+
+.entryCanvas > .colorPaper > form > div {
+  margin: 5px;
+}

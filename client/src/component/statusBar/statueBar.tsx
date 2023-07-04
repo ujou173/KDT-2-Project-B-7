@@ -5,7 +5,9 @@ interface StatusBarProps {}
 const StatusBar: React.FC<StatusBarProps> = () => {
   return (
     <div className='statusBar'>
-
+      <div className='userInfo'>
+        <div className='characterColor'></div>
+      </div>
     </div>
   )
 }
