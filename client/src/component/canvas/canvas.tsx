@@ -30,16 +30,26 @@ const canvasComp: React.FC<Props> = ({isChat}) => {
   const [ onlineUsers, setOnlineUsers ] = React.useState<{[nickName: string] : MultiplayerUser}>({});
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<UserCharacter | null>(null);
-
-  // is ingame setting
+  
+  // div root is ingame setting
   React.useEffect(()=>{
     const root = document.getElementById('root');
+    const html = document.querySelector('html');
+
+    if (html) {
+      html.style.overflow = 'hidden';
+    }
+
     root?.classList.add('isIngame');
     document.title = 'welcome CSS!'
+
 
     // isIngame clean-up code
     return () => {
       root?.classList.remove('isIngame');
+      if (html) {
+        html.style.overflow = ""
+      }
     }
   }, [])
 

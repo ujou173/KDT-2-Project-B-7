@@ -58,15 +58,19 @@ const EntryCanvas: React.FC<Props> = () => {
         <form ref={formElement} onSubmit={submitHandler}>
           <div><h1>캐릭터 설정</h1></div>
           <div>
-            닉네임 설정 : <input type="text" maxLength={12} onChange={nickNameHandle} value={nickName} placeholder='닉네임 입력'/><br />
-            플레이어 색상 설정 : <select onChange={colorHandle} title='색상 입력'>
+            <p>닉네임 설정 : </p>
+            <input type="text" maxLength={12} onChange={nickNameHandle} value={nickName} placeholder='닉네임 입력'/>
+            <p>플레이어 색상 설정 : </p>
+            <select onChange={colorHandle} title='색상 입력'>
               <option value="red">빨강</option>
               <option value="blue">파랑</option>
               <option value="yellow">노랑</option>
               <option value="green">초록</option>
             </select>
+            <div>
+              <input type="submit" value="전송" />
+            </div>
           </div>
-          <input type="submit" value="전송" />
         </form>
       </div>
     </div>

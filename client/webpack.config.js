@@ -26,17 +26,11 @@ module.exports = {
           "css-loader"
         ]
       },
-      {
-        test: [/\.png$/],
-        use: [
-          "file-loader"
-        ]
-      }
     ]
   },
   resolve: {
     extensions: [
-      ".js", ".jsx", ".ts", ".tsx", ".css", ".png"
+      ".js", ".jsx", ".ts", ".tsx", ".css"
     ]
   },
   plugins: [

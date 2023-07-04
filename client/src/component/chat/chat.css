@@ -1,9 +1,92 @@
 .chat {
   position: absolute;
   width: 300px;
-  height: 100vh;
-  background: pink;
-  right: -50%;
+  height: 100vh - 65px;
+  right: -100%;
   top: 0;
   bottom: 65px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chat > div {
+  padding: 10px;
+}
+
+
+
+
+
+.chat > div:nth-of-type(1) {
+  width: 100%;
+  height: 10%;
+  background-color: rgb(22, 22, 78);
+  color: white;
+  line-height: 65px;
+  padding-left: 20px;
+}
+
+
+
+
+/* 챗 박스 */
+.chat > div:nth-of-type(2) {
+  width: 100%;
+  height: 80%;
+  background-color: rgb(30, 30, 102);
+  color: white
+}
+
+.chat > div:nth-of-type(2) > .chatBox {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+}
+.chat > div:nth-of-type(2) > .chatBox::-webkit-scrollbar {
+  overflow-y:hidden;
+}
+.chat .chatBox > div {
+  width: 100%;
+  height: 50px;
+}
+.chat .myChat {
+  text-align: right;
+}
+.chat .serverChat {
+  text-align: center;
+  color: rgb(187, 187, 187);
+  font-size: 12px;
+  line-height: 25px;
+}
+.chat .chatBox h4 {
+  color: rgb(153, 10, 158)
+}
+
+
+
+
+/* 채팅 입력 */
+.chat > div:nth-of-type(3) {
+  width: 100%;
+  height: 10%;
+  background-color: rgb(22, 22, 78);
+}
+.chat > div:nth-of-type(3) form {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.chat > div:nth-of-type(3) input:nth-of-type(1) {
+  width: 215px;
+  height: 100%;
+  resize: none;
+  padding-left: 5px;
+}
+
+.chat > div:nth-of-type(3) input:nth-of-type(2) {
+  width: 20%;
+  height: 100%;
 }
