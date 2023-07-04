@@ -4,6 +4,7 @@ import { fontSize, pixel } from '../canvas-common';
 import { UserCharacterProps } from './charType';
 import { MultiplayerUser } from './multiplayer';
 import { duration } from '../canvas-common';
+import { Field } from '../field/field';
 
 // client User
 export class UserCharacter extends Player {
@@ -17,7 +18,8 @@ export class UserCharacter extends Player {
   isMoveUp: boolean
   isMoveDown: boolean
   isMove: boolean
-  constructor({ canvas, ctx, id, color, position, moveSocket }: UserCharacterProps) {
+  field: Field
+  constructor({ canvas, ctx, id, color, position, moveSocket, field }: UserCharacterProps) {
     super({ canvas, ctx, id, color, position })
     this.moveSocket = moveSocket;
     this.pressedKey = {};
@@ -27,6 +29,7 @@ export class UserCharacter extends Player {
     this.isMoveUp = true;
     this.isMoveDown = true;
     this.isMove = false
+    this.field = field
   }
   private positionUpdate(): {id: string, position: {x: number, y: number}} {
     return {id: this.id, position: this.position}
@@ -90,7 +93,7 @@ export class UserCharacter extends Player {
 
   moveCharacter(): void {
     // character move
-    if (this.position.x + pixel <= this.c.width - pixel) {
+    if (this.position.x + pixel <= this.field.size.x - pixel) {
       if (this.pressedKey.ArrowRight) {
         if (this.checkMove()) {
           this.moveRight();
@@ -114,7 +117,7 @@ export class UserCharacter extends Player {
         }
       }
     }
-    if (this.position.y + pixel <= this.c.height - pixel) {
+    if (this.position.y + pixel <= this.field.size.y - pixel) {
       if (this.pressedKey.ArrowDown) {
         if (this.checkMove()) {
           this.moveDown();

@@ -3,7 +3,7 @@ import './canvas.css'
 import { UserCharacter } from './character/userCharacter'
 import { MultiplayerUser } from './character/multiplayer'
 import { MultiplayerData } from './character/charType';
-import { field } from './field/field'
+import { Field } from './field/field'
 import { keydownHandler, keyupHandler } from './event/keyboard'
 import { io, Socket } from 'socket.io-client'
 import { useLocation, Location, useNavigate, NavigateFunction } from 'react-router-dom'
@@ -14,13 +14,14 @@ interface Props {};
 // component
 const canvasComp: React.FC<Props> = () => {
   // variable management
-  const main = document.getElementById('main');
+  const main = document.querySelector<HTMLDivElement>('.main');
   const navigate: NavigateFunction = useNavigate();
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
   const nickName = React.useRef<string>(useLocation().state.nickName);
   const color = React.useRef<string>(useLocation().state.color);
   const serverSocketRef = React.useRef<Socket | null>(null);
   const moveSocketRef = React.useRef<Socket | null>(null);
+  const [ field, setField ] = React.useState<Field>()
   const [ onlineUsers, setOnlineUsers ] = React.useState<{[nickName: string] : MultiplayerUser}>({});
   const [ ctx, setCtx ] = React.useState<CanvasRenderingContext2D | null>(null)
   const [ user, setUser ] = React.useState<UserCharacter | null>(null);
@@ -59,19 +60,19 @@ const canvasComp: React.FC<Props> = () => {
     if (!canvasElement.current || !main) return;
     canvasElement.current.width = main.clientWidth;
     canvasElement.current.height = main.clientHeight;
-    console.log('위쓰 : '+main.clientWidth, '헤이트 : '+main.clientHeight)
   }, [main?.clientWidth, main?.clientHeight])
 
   // create context
   React.useEffect(()=>{
     if (canvasElement.current === null) return;
     setCtx(canvasElement.current.getContext('2d'));
+    resizeCanvas();
   }, [canvasElement.current])
 
   // field
   React.useEffect(()=>{
-    if (!canvasElement.current || !ctx || !main) return;
-    field(canvasElement.current, ctx, main);
+    if (!canvasElement.current || !ctx) return;
+    setField(new Field(canvasElement.current, ctx, {x: 960, y: 540}))
   }, [ctx])
 
   // ===================================================================
@@ -83,7 +84,7 @@ const canvasComp: React.FC<Props> = () => {
 
   // init my character
   React.useEffect(()=>{
-    if (canvasElement.current === null || ctx === null || moveSocketRef.current === null) return;
+    if (!canvasElement.current || !ctx || !moveSocketRef.current || !field) return;
     setUser(new UserCharacter({
       canvas: canvasElement.current,
       ctx,
@@ -93,9 +94,10 @@ const canvasComp: React.FC<Props> = () => {
         y: 0
       },
       color: color.current,
-      moveSocket: moveSocketRef.current
+      moveSocket: moveSocketRef.current,
+      field: field
     }))
-  }, [ctx])
+  }, [ctx, field])
 
   // create multiplayer user
   const newMuiltiCharacter: (payload: MultiplayerData) => MultiplayerUser | undefined = React.useCallback((payload)=>{
@@ -119,9 +121,14 @@ const canvasComp: React.FC<Props> = () => {
   React.useEffect(()=>{
     const animation: () => void = function() {
       requestAnimationFrame(animation);
+
+      // canvas background
       if (canvasElement.current === null || ctx === null || user === null) return;
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, canvasElement.current.width, canvasElement.current.height);
+
+      // field
+      field?.drawField();
       
       // multiplayer
       if (Object.keys(onlineUsers).length > 0) {
@@ -135,7 +142,7 @@ const canvasComp: React.FC<Props> = () => {
       
     }
     animation();
-  }, [user, onlineUsers])
+  }, [user, onlineUsers, field])
 
   // ======================================================================
 
@@ -154,6 +161,7 @@ const canvasComp: React.FC<Props> = () => {
     // clean-up code
     return () => {
       removeEventListener('resize', handleResize);
+      console.log('clean-up했어')
     }
   }, [resizeCanvas])
 

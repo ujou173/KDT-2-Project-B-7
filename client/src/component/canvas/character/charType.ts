@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io-client';
+import { Field } from '../field/field';
 
 // character Type
 export interface PlayerProps {
@@ -22,7 +23,8 @@ export interface UserCharacterProps {
     x: number,
     y: number
   },
-  moveSocket: Socket
+  moveSocket: Socket,
+  field: Field
 }
 
 // multiplayer user Type
