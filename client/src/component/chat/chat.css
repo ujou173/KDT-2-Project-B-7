@@ -1,8 +1,9 @@
 .chat {
   position: absolute;
-  width: 320px;
+  width: 300px;
   height: 100vh;
   background: pink;
-  right: 0;
+  right: -50%;
   top: 0;
+  bottom: 65px;
 }

@@ -10,13 +10,16 @@ import { useLocation, Location, useNavigate, NavigateFunction } from 'react-rout
 import { pixel } from './canvas-common';
 
 // type
-interface Props {};
+interface Props {
+  isChat: boolean
+};
 
 // component
-const canvasComp: React.FC<Props> = () => {
+const canvasComp: React.FC<Props> = ({isChat}) => {
   // variable management
   const main = document.querySelector<HTMLDivElement>('.main');
   const statusBar = document.querySelector<HTMLDivElement>('.statusBar');
+  const chat = document.querySelector<HTMLDivElement>('.chat')
   const navigate: NavigateFunction = useNavigate();
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
   const nickName = React.useRef<string>(useLocation().state.nickName);
@@ -40,7 +43,6 @@ const canvasComp: React.FC<Props> = () => {
     }
   }, [])
 
-
   // socket connect ================================================
 
   React.useEffect(()=>{
@@ -60,9 +62,14 @@ const canvasComp: React.FC<Props> = () => {
   // canvas setup ===========================================
 
   const resizeCanvas = React.useCallback(()=>{
-    if (!canvasElement.current || !main || !statusBar) return;
-    canvasElement.current.width = main.clientWidth;
-    canvasElement.current.height = main.clientHeight - statusBar.clientHeight;
+    if (!canvasElement.current || !main || !statusBar || !chat) return;
+    if (isChat) {
+      canvasElement.current.width = main.clientWidth - chat.clientWidth;
+      canvasElement.current.height = main.clientHeight - statusBar.clientHeight;
+    } else {
+      canvasElement.current.width = main.clientWidth;
+      canvasElement.current.height = main.clientHeight - statusBar.clientHeight;
+    }
     if (user) {
       user.position = {
         x: user.field.fieldCenter().x + (user.movement.x * pixel),
@@ -77,7 +84,7 @@ const canvasComp: React.FC<Props> = () => {
         }
       })
     }
-  }, [canvasElement.current, main?.clientWidth, main?.clientHeight, field, user, onlineUsers, statusBar?.clientWidth, statusBar?.clientHeight])
+  }, [canvasElement.current, main?.clientWidth, main?.clientHeight, field, user, onlineUsers, statusBar?.clientWidth, statusBar?.clientHeight, isChat])
 
   // create context
   React.useEffect(()=>{
@@ -176,6 +183,11 @@ const canvasComp: React.FC<Props> = () => {
       removeEventListener('resize', handleResize);
     }
   }, [resizeCanvas])
+  
+  // chat toggle resize
+  React.useEffect(()=>{
+    resizeCanvas();
+  }, [isChat])
 
   // keyboard event
   React.useEffect(()=>{

@@ -7,11 +7,13 @@ import './main.css';
 interface Props {}
 
 const Main: React.FC<Props> = () => {
+  const [ isChat, setIsChat ] = React.useState<boolean>(false);
+
   return (
     <div className="main">
-      <Canvas />
-      {/* <Chat /> */}
-      <StatusBar />
+      <Canvas isChat={isChat} />
+      <Chat isChat={isChat} />
+      <StatusBar isChat={isChat} setIsChat={setIsChat} />
     </div>
   )
 }
