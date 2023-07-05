@@ -62,7 +62,7 @@ const Chat: React.FC<ChatProps> = ({isChat}) => {
     if (chatBox.current) {
       chatBox.current.scrollTop = chatBox.current.scrollHeight;
     }
-  }, [chatBox.current?.children.length])
+  }, [MSGLog])
 
   // chat send event
   const sendMSG = React.useCallback(()=>{
