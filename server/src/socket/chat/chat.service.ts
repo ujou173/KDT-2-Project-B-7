@@ -12,7 +12,7 @@ export class ChatService {
   // enter user
   addOnlineUser(userInfo: {socketID: string, nickName: string}): {id: string, msg: string, sender: string} {
     this.onlineUsers[userInfo.socketID] = userInfo.nickName
-    return {id: v4(), msg: `[ ${JSON.stringify(userInfo.nickName)} ] 님이 입장 하셨습니다.`, sender: 'server'}
+    return {id: v4(), msg: `[ ${userInfo.nickName} ] 님이 입장 하셨습니다.`, sender: 'server'}
   }
   
   // disconnect user
