@@ -24,7 +24,6 @@ const canvasComp: React.FC<Props> = ({isChat}) => {
   const canvasElement = React.useRef<HTMLCanvasElement>(null);
   const nickName = React.useRef<string>(useLocation().state.nickName);
   const color = React.useRef<string>(useLocation().state.color);
-  const serverSocketRef = React.useRef<Socket | null>(null);
   const moveSocketRef = React.useRef<Socket | null>(null);
   const [ field, setField ] = React.useState<Field>()
   const [ onlineUsers, setOnlineUsers ] = React.useState<{[nickName: string] : MultiplayerUser}>({});
@@ -56,10 +55,8 @@ const canvasComp: React.FC<Props> = ({isChat}) => {
   // socket connect ================================================
 
   React.useEffect(()=>{
-    serverSocketRef.current = io();
     moveSocketRef.current = io('/character-move');
     return ()=>{
-      serverSocketRef.current?.emit('outConnect', 'outCanvas')
       moveSocketRef.current?.emit('outConnect', 'outCanvas')
     }
   }, [])
@@ -277,15 +274,8 @@ const canvasComp: React.FC<Props> = ({isChat}) => {
     });
 
     // server offline
-    serverSocketRef.current?.on('disconnect', () => {
-      moveSocketRef.current?.emit('outConnect', 'outCanvas')
-      moveSocketRef.current?.disconnect();
+      moveSocketRef.current?.on('disconnect', () => {
       alert('서버와 접속이 끊어졌습니다.');
-      navigate('/');
-    });
-    moveSocketRef.current?.on('disconnect', () => {
-      serverSocketRef.current?.emit('outConnect', 'outCanvas')
-      serverSocketRef.current?.disconnect();
       navigate('/');
     });
 
@@ -296,7 +286,6 @@ const canvasComp: React.FC<Props> = ({isChat}) => {
       moveSocketRef.current?.removeAllListeners('moveCharacter');
       moveSocketRef.current?.removeAllListeners('exitUser');
       moveSocketRef.current?.removeAllListeners('disconnect');
-      serverSocketRef.current?.removeAllListeners('disconnect');
     }
   }, [user, ctx, onlineUsers])
 
