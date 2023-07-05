@@ -44,6 +44,7 @@
   overflow-y: scroll;
 }
 .chat > div:nth-of-type(2) > .chatBox::-webkit-scrollbar {
+  width: 0;
   overflow-y:hidden;
 }
 .chat .chatBox > div {
